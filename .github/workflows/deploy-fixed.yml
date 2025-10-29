@@ -95,21 +95,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Copy files to working directory
+        run: |
+          mkdir -p ~/BlitzDuel
+          cp -r * ~/BlitzDuel/ || true
+          cd ~/BlitzDuel
+
       - name: Create .env file
         run: |
+          cd ~/BlitzDuel
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
+          echo "TUNNEL_TOKEN=${{ secrets.TUNNEL_TOKEN }}" >> .env
 
       - name: Pull latest images
         run: |
+          cd ~/BlitzDuel
           docker pull ${{ secrets.DOCKER_USERNAME }}/blitzduel-backend:latest
           docker pull ${{ secrets.DOCKER_USERNAME }}/blitzduel-frontend:latest
 
       - name: Stop old containers
         run: |
+          cd ~/BlitzDuel
           docker compose down || true
 
       - name: Start new containers
         run: |
+          cd ~/BlitzDuel
           docker compose up -d --remove-orphans
 
       - name: Clean up old images
