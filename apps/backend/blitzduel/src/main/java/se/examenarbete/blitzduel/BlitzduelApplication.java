@@ -8,6 +8,7 @@ public class BlitzduelApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BlitzduelApplication.class, args);
+        System.out.println("hello");
 	}
 
 }
