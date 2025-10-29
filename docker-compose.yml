@@ -21,6 +21,16 @@ services:
       - blitzduel-network
     restart: unless-stopped
 
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-tunnel
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    networks:
+      - blitzduel-network
+    restart: unless-stopped
+
 networks:
   blitzduel-network:
     driver: bridge
