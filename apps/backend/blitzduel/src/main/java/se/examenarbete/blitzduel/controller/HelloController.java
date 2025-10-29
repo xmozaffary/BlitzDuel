@@ -17,4 +17,9 @@ public class HelloController {
     public String health() {
         return "Backend is running! ✅";
     }
+    @GetMapping("/hell")
+    public String hell() {
+        return "You are in the hell! ✅";
+    }
+}
 }
