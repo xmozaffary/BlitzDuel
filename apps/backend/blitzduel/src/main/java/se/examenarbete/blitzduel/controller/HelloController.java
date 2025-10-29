@@ -22,4 +22,3 @@ public class HelloController {
         return "You are in the hell! ✅";
     }
 }
-}
