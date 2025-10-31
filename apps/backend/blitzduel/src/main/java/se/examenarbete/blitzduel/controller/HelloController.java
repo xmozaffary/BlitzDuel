@@ -21,4 +21,9 @@ public class HelloController {
     public String hell() {
         return "You are in the hell! ✅";
     }
+
+    @GetMapping("/friday")
+    public String friday() {
+        return "It is friday, Hurraaa ✅";
+    }
 }
