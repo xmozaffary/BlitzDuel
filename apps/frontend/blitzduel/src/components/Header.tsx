@@ -11,10 +11,10 @@ export const Header = () => {
                 <NavLink to={"/"}>Hem</NavLink>
               </li>
               <li>
-                <NavLink to={"/games"}>Games</NavLink>
+                <NavLink to={"/Web"}>Web</NavLink>
               </li>
               <li>
-                <NavLink to={"/game"}>Om</NavLink>
+                <NavLink to={"/om"}>Om</NavLink>
               </li>
             </ul>
           </nav>
