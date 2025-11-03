@@ -72,7 +72,7 @@ function TestWebSocket() {
             return;
         }
 
-        const socket = new SockJS('http://localhost:8080/ws');
+        const socket = new SockJS('https://api.ittt.se/ws');
         const client = new Client({
             webSocketFactory: () => socket,
 
