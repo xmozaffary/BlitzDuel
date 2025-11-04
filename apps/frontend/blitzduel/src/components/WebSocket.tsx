@@ -88,6 +88,13 @@ function TestWebSocket() {
                 client.subscribe(`/topic/lobby/${joinCode}`, (message: IMessage) => {
                     const data: LobbyUpdate = JSON.parse(message.body);
                     addLog(`📨 Lobby update: ${JSON.stringify(data)}`);
+
+                    if(data.status === "FULL"){
+                        addLog('❌ Lobby is full!');
+                        client.deactivate();
+                        return;
+                    }
+                    addLog(`📨 Lobby update: ${JSON.stringify(data)}`);
                 });
 
                 // Skicka join request
