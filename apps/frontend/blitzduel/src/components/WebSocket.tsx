@@ -5,6 +5,7 @@ import SockJS from 'sockjs-client';
 // Backend response types
 interface LobbyResponse {
     code: string;
+    status: string;
 }
 
 interface LobbyUpdate {
@@ -39,7 +40,7 @@ function TestWebSocket() {
             webSocketFactory: () => socket,
 
             onConnect: () => {
-                addLog('✅ Connected to WebSocket');
+                addLog(`✅ Connected to WebSocket`);
 
                 // Subscribe till response
                 client.subscribe('/user/queue/lobby', (message: IMessage) => {
@@ -82,33 +83,41 @@ function TestWebSocket() {
             webSocketFactory: () => socket,
 
             onConnect: () => {
-                addLog('✅ Connected to WebSocket');
+                addLog(`✅ Connected to WebSocket`);
+
+
+                client.subscribe('/user/queue/lobby', (message: IMessage) => {
+                    const data: LobbyResponse = JSON.parse(message.body);
+
+                    if (data.status === "FULL") {
+                        console.log("vad")
+                        addLog('Lobby is full!');
+                        client.deactivate();
+                        return;
+                    }
+                });
 
                 // Subscribe till lobby updates
                 client.subscribe(`/topic/lobby/${joinCode}`, (message: IMessage) => {
                     const data: LobbyUpdate = JSON.parse(message.body);
                     addLog(`📨 Lobby update: ${JSON.stringify(data)}`);
 
-                    if(data.status === "FULL"){
-                        addLog('❌ Lobby is full!');
-                        client.deactivate();
-                        return;
-                    }
-                    addLog(`📨 Lobby update: ${JSON.stringify(data)}`);
                 });
 
                 // Skicka join request
-                const payload: LobbyRequest = { nickname };
-                client.publish({
-                    destination: `/app/lobby/${joinCode}/join`,
-                    body: JSON.stringify(payload)
-                });
+                setTimeout(() => {
+                    const payload: LobbyRequest = { nickname };
+                    client.publish({
+                        destination: `/app/lobby/${joinCode}/join`,
+                        body: JSON.stringify(payload)
+                    });
 
-                addLog(`📤 Sent join request to ${joinCode}`);
+                    addLog(`📤 Sent join request to ${joinCode}`);
+                }, 100);
             },
 
             onStompError: (frame) => {
-                addLog('❌ Error: ' + frame.headers.message);
+                addLog(`❌ Error:` + frame.headers.message);
             }
         });
 

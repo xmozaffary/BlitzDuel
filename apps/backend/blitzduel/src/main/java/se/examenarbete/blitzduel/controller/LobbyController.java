@@ -2,7 +2,7 @@ package se.examenarbete.blitzduel.controller;
 
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import se.examenarbete.blitzduel.dto.CreateLobbyRequest;
@@ -11,12 +11,17 @@ import se.examenarbete.blitzduel.dto.LobbyResponse;
 import se.examenarbete.blitzduel.model.Lobby;
 import se.examenarbete.blitzduel.service.LobbyService;
 
+import java.security.Principal;
+import java.util.Optional;
+
 @Controller
 public class LobbyController {
     private final LobbyService lobbyService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public LobbyController(LobbyService lobbyService){
+    public LobbyController(LobbyService lobbyService, SimpMessagingTemplate messagingTemplate){
         this.lobbyService = lobbyService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @MessageMapping("/lobby/create")
@@ -25,6 +30,7 @@ public class LobbyController {
         System.out.println("Create lobby request from: " + request.getNickname());
 
         Lobby lobby = lobbyService.createLobby(request.getNickname());
+
 
         return new LobbyResponse(
                 lobby.getCode(),
@@ -35,21 +41,43 @@ public class LobbyController {
     }
 
     @MessageMapping("/lobby/{code}/join")
-    @SendTo("/topic/lobby/{code}")
-    public LobbyResponse joinLobby(
+    public void joinLobby(
             @DestinationVariable String code,
-            JoinLobbyRequest request
+            JoinLobbyRequest request,
+            Principal principal
     ) {
         System.out.println("Join lobby request: " + code + " from: " + request.getNickname());
 
-        Lobby lobby = lobbyService.joinLobby(code, request.getNickname())
-                .orElseThrow(() -> new RuntimeException("Lobby full or not found: " + code));
+        Optional<Lobby> lobbyOpt = lobbyService.joinLobby(code, request.getNickname());
 
-        return new LobbyResponse(
+        if(lobbyOpt.isEmpty()){
+            System.out.println("=== SENDING FULL MESSAGE ===");
+            System.out.println("Principal name: " + principal.getName());
+
+
+            LobbyResponse errorResponse = new LobbyResponse(code, "FULL", null, null);
+
+            messagingTemplate.convertAndSendToUser(
+                    principal.getName(),
+                    "/queue/lobby",
+                    errorResponse
+            );
+            System.out.println("Sent FULL message to " + request.getNickname());
+            return;
+        }
+
+        Lobby lobby = lobbyOpt.get();
+
+        LobbyResponse successResponse = new LobbyResponse(
                 lobby.getCode(),
                 lobby.getStatus().name(),
                 lobby.getPlayer1Nickname(),
                 lobby.getPlayer2Nickname()
         );
+        messagingTemplate.convertAndSend(
+                "/topic/lobby/" + code,
+                successResponse
+        );
+        System.out.println("Sent SUCCESS message to /topic/lobby/" + code);
     }
 }
