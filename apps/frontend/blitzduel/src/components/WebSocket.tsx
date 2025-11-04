@@ -46,6 +46,11 @@ function TestWebSocket() {
                     const data: LobbyResponse = JSON.parse(message.body);
                     addLog(`📨 Lobby created: ${data.code}`);
                     setLobbyCode(data.code);
+
+                    client.subscribe(`/topic/lobby/${data.code}`, (updateMessage: IMessage) => {
+                        const updateData: LobbyUpdate = JSON.parse(updateMessage.body);
+                        addLog(`📨 Lobby updated: ${JSON.stringify(updateData)} `);
+                    });
                 });
 
                 // Skicka create request
