@@ -11,7 +11,7 @@ export const Header = () => {
                 <NavLink to={"/"}>Hem</NavLink>
               </li>
               <li>
-                <NavLink to={"/Web"}>Web</NavLink>
+                <NavLink to={"/lobby/join"}>Join lobby</NavLink>
               </li>
               <li>
                 <NavLink to={"/om"}>Om</NavLink>

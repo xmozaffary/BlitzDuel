@@ -1,9 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Layout } from "./pages/Layout";
-import  WebSocket  from "./components/WebSocket";
 import { NotFound } from "./pages/NotFound";
-import QuizSelection from "./pages/QuizSelection"
+import Quizzes from "./pages/Quizzes";
 import QuizDetails from "./pages/QuizDetails";
+import CreateLobby from "./components/CreateLobby";
+import JoinLobby from "./components/JoinLobby";
 
 export const router = createBrowserRouter([
   {
@@ -12,16 +13,20 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <QuizSelection />,
+        element: <Quizzes />,
       },
-        {
-          path: "/quiz/:quizId",
-          element: <QuizDetails />
-        },
-        {
-          path: "/Web",
-          element: <WebSocket />,
-        }
+      {
+        path: "/quiz/:quizId",
+        element: <QuizDetails />,
+      },
+      {
+        path: "/lobby/create",
+        element: <CreateLobby />,
+      },
+      {
+        path: "/lobby/join",
+        element: <JoinLobby />,
+      },
     ],
     errorElement: <NotFound />,
   },

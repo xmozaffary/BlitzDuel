@@ -1,5 +1,9 @@
 @use "header";
 @use "footer";
 @use "home";
-@use "quiz-selection";
+@use "quizzes";
 @use "quiz-details.scss";
+@use "button.scss";
+@use "create-lobby.scss";
+@use "join-lobby.scss";
+@use "quiz-card";

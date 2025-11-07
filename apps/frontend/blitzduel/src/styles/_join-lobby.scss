@@ -1,0 +1,73 @@
+.join-lobby {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  text-align: center;
+
+  h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+  }
+
+  input {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.3s;
+
+    &:focus {
+      outline: none;
+      border-color: #2ecc71;
+    }
+
+    &::placeholder {
+      color: #95a5a6;
+    }
+  }
+
+  .success-massage {
+    background: #d4edda;
+    color: #155724;
+    padding: 1.5rem;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 2rem 0;
+    border: 2px solid #c3e6cb;
+  }
+
+  .logs {
+    margin-top: 3rem;
+    text-align: left;
+
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #34495e;
+    }
+
+    > div {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: "Courier New", monospace;
+      font-size: 0.9rem;
+      border: 1px solid #dee2e6;
+
+      > div {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e9ecef;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
