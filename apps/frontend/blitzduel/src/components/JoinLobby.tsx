@@ -35,7 +35,7 @@ const JoinLobby = () => {
       });
 
       setTimeout(() => {
-        const payLoad: LobbyRequest = { nickname };
+        const payLoad: LobbyRequest = { nickname, quizId:1 };
         client.publish({
           destination: `/app/lobby/${joinCode}/join`,
           body: JSON.stringify(payLoad),
