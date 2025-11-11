@@ -4,15 +4,17 @@ public class LobbyResponse {
 
     private String code;
     private String status;
+    private Long quizId;
     private String player1;
     private String player2;
 
     public LobbyResponse() {
     }
 
-    public LobbyResponse(String code, String status, String player1, String player2){
+    public LobbyResponse(String code, String status, Long quizId, String player1, String player2){
         this.code = code;
         this.status = status;
+        this.quizId = quizId;
         this.player1 = player1;
         this.player2 = player2;
     }
@@ -32,6 +34,14 @@ public class LobbyResponse {
 
     public void setPlayer1(String player1) {
         this.player1 = player1;
+    }
+
+    public Long getQuizId() {
+        return quizId;
+    }
+
+    public void setQuizId(Long quizId) {
+        this.quizId = quizId;
     }
 
     public String getPlayer2() {

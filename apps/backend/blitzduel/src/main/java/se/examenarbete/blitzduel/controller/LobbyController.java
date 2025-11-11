@@ -29,12 +29,13 @@ public class LobbyController {
     public LobbyResponse createLobby(CreateLobbyRequest request){
         System.out.println("Create lobby request from: " + request.getNickname());
 
-        Lobby lobby = lobbyService.createLobby(request.getNickname());
+        Lobby lobby = lobbyService.createLobby(request.getNickname(), request.getQuizId());
 
 
         return new LobbyResponse(
                 lobby.getCode(),
                 lobby.getStatus().name(),
+                lobby.getQuizId(),
                 lobby.getPlayer1Nickname(),
                 null
         );
@@ -55,7 +56,7 @@ public class LobbyController {
             System.out.println("Principal name: " + principal.getName());
 
 
-            LobbyResponse errorResponse = new LobbyResponse(code, "FULL", null, null);
+            LobbyResponse errorResponse = new LobbyResponse(code, "FULL", null, null, null);
 
             messagingTemplate.convertAndSendToUser(
                     principal.getName(),
@@ -71,6 +72,7 @@ public class LobbyController {
         LobbyResponse successResponse = new LobbyResponse(
                 lobby.getCode(),
                 lobby.getStatus().name(),
+                lobby.getQuizId(),
                 lobby.getPlayer1Nickname(),
                 lobby.getPlayer2Nickname()
         );

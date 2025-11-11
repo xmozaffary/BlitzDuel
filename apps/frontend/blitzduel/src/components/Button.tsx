@@ -1,8 +1,9 @@
 interface ButtonProps {
   text: string;
   onClick: () => void;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "ready";
   disabled?: boolean;
+  size?: "small" | "medium" | "large";
 }
 
 export const Button = ({

@@ -1,6 +1,10 @@
 export interface LobbyResponse {
   code: string;
   status: string;
+  quizId: number;
+  player1: string;
+  player2: string | null;
+
 }
 
 export interface LobbyUpdate {
@@ -11,4 +15,5 @@ export interface LobbyUpdate {
 
 export interface LobbyRequest {
   nickname: string;
+  quizId: number;
 }

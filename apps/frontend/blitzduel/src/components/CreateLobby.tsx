@@ -3,16 +3,24 @@ import { Button } from "../components/Button";
 import type { LobbyRequest, LobbyResponse, LobbyUpdate } from "../types/lobby";
 import { useWebSocket } from "../hooks/useWebSocket";
 import type { IMessage } from "@stomp/stompjs";
+import {useLocation} from "react-router-dom";
 
 const CreateLobby = () => {
   const [nickname, setNickname] = useState<string>("");
   const [lobbyCode, setLobbyCode] = useState<string>("");
   const { logs, addLog, createClient } = useWebSocket();
+  const location = useLocation();
+  const quizId = location.state?.quizId;
+
 
   const handleCreateLobby = (): void => {
     if (!nickname) {
       alert("Enter nickname");
       return;
+    }
+    if(!quizId) {
+        alert("No quiz selected! Go back and select a quiz.");
+        return;
     }
 
     const client = createClient((client) => {
@@ -20,8 +28,9 @@ const CreateLobby = () => {
 
       client.subscribe("/user/queue/lobby", (message: IMessage) => {
         const data: LobbyResponse = JSON.parse(message.body);
-        addLog(`📨 Lobby created: ${data.code}`);
+        addLog(`📨 Lobby created: ${data.code} quizId ${data.quizId}`);
         setLobbyCode(data.code);
+
 
         client.subscribe(
           `/topic/lobby/${data.code}`,
@@ -32,7 +41,7 @@ const CreateLobby = () => {
         );
       });
 
-      const payLoad: LobbyRequest = { nickname };
+      const payLoad: LobbyRequest = { nickname, quizId: Number(quizId) };
       client.publish({
         destination: "/app/lobby/create",
         body: JSON.stringify(payLoad),
@@ -43,7 +52,12 @@ const CreateLobby = () => {
     client.activate();
   };
 
-  return (
+    const startGame = (): void => {
+        console.log("Starta match");
+    }
+
+
+    return (
     <div className="create-lobby">
       <h1>Skapa Lobby</h1>
       <input
@@ -62,7 +76,7 @@ const CreateLobby = () => {
         {logs.map((log, idx) => (
           <div key={idx}>{log}</div>
         ))}
-      </div>
+      </div><Button text="Starta match" variant="secondary" disabled={true} onClick={startGame} size="large"></Button>
     </div>
   );
 };

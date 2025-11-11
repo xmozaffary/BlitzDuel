@@ -13,6 +13,7 @@ public class Lobby {
     }
 
     private final String code;
+    private final Long quizId;
     private final String player1Nickname;
     private String player2Nickname;
     private Status status;
@@ -20,8 +21,9 @@ public class Lobby {
 
 
 
-    public Lobby(String code, String player1Nickname){
+    public Lobby(String code, Long quizId, String player1Nickname){
         this.code = code;
+        this.quizId = quizId;
         this.player1Nickname = player1Nickname;
         this.status = Status.WAITING;
         this.createdAt = LocalDateTime.now();
@@ -41,6 +43,10 @@ public class Lobby {
 
     public Status getStatus(){
         return status;
+    }
+
+    public Long getQuizId() {
+        return quizId;
     }
 
     public LocalDateTime getCreatedAt(){

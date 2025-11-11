@@ -19,12 +19,12 @@ public class LobbyService {
         this.randomCodeGenerator = randomCodeGenerator;
     }
 
-    public Lobby createLobby(String nickname){
+    public Lobby createLobby(String nickname, Long quizId){
         String code = randomCodeGenerator.generate();
         while (lobbies.containsKey(code)){
             code = randomCodeGenerator.generate();
         }
-        Lobby lobby = new Lobby(code, nickname);
+        Lobby lobby = new Lobby(code, quizId, nickname);
         lobbies.put(code, lobby);
         System.out.println("Lobby created: " + lobby);
         return lobby;

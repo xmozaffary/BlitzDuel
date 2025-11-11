@@ -17,12 +17,36 @@
   }
 
   &-secondary {
+    background: #95a5a6;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: #7f8c8d;
+    }
+  }
+
+  &-ready {
     background: #2ecc71;
     color: white;
 
     &:hover:not(:disabled) {
       background: #27ae60;
     }
+  }
+
+  &-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  &-medium {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+
+  &-large {
+    padding: 1.5rem 3rem;
+    font-size: 1.25rem;
   }
 
   &:disabled {
