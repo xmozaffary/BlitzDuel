@@ -1,9 +1,9 @@
 export interface LobbyResponse {
-  code: string;
+  lobbyCode: string;
   status: string;
   quizId: number;
-  player1: string;
-  player2: string | null;
+  hostName: string;
+  guestName: string | null;
 
 }
 
@@ -14,6 +14,10 @@ export interface LobbyUpdate {
 }
 
 export interface LobbyRequest {
-  nickname: string;
+  name: string;
   quizId: number;
+}
+
+export interface JoinLobbyRequest {
+    name: string;
 }

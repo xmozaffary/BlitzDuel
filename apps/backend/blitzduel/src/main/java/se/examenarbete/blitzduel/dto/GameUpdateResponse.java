@@ -3,11 +3,11 @@ package se.examenarbete.blitzduel.dto;
 public class GameUpdateResponse {
 
     private String status;
-    private Integer correctAnswer;
-    private Boolean player1Correct;
-    private Boolean player2Correct;
-    private Integer player1Score;
-    private Integer player2Score;
+    private Integer correctAnswerIndex;
+    private Boolean hostCorrect;
+    private Boolean guestCorrect;
+    private Integer hostScore;
+    private Integer guestScore;
 
     public String getStatus() {
         return status;
@@ -17,44 +17,44 @@ public class GameUpdateResponse {
         this.status = status;
     }
 
-    public Integer getCorrectAnswer() {
-        return correctAnswer;
+    public Integer getCorrectAnswerIndex() {
+        return correctAnswerIndex;
     }
 
-    public void setCorrectAnswer(Integer correctAnswer) {
-        this.correctAnswer = correctAnswer;
+    public void setCorrectAnswerIndex(Integer correctAnswerIndex) {
+        this.correctAnswerIndex = correctAnswerIndex;
     }
 
-    public Boolean getPlayer1Correct() {
-        return player1Correct;
+    public Boolean getHostCorrect() {
+        return hostCorrect;
     }
 
-    public void setPlayer1Correct(Boolean player1Correct) {
-        this.player1Correct = player1Correct;
+    public void setHostCorrect(Boolean hostCorrect) {
+        this.hostCorrect = hostCorrect;
     }
 
-    public Boolean getPlayer2Correct() {
-        return player2Correct;
+    public Boolean getGuestCorrect() {
+        return guestCorrect;
     }
 
-    public void setPlayer2Correct(Boolean player2Correct) {
-        this.player2Correct = player2Correct;
+    public void setGuestCorrect(Boolean guestCorrect) {
+        this.guestCorrect = guestCorrect;
     }
 
-    public Integer getPlayer1Score() {
-        return player1Score;
+    public Integer getHostScore() {
+        return hostScore;
     }
 
-    public void setPlayer1Score(Integer player1Score) {
-        this.player1Score = player1Score;
+    public void setHostScore(Integer hostScore) {
+        this.hostScore = hostScore;
     }
 
-    public Integer getPlayer2Score() {
-        return player2Score;
+    public Integer getGuestScore() {
+        return guestScore;
     }
 
-    public void setPlayer2Score(Integer player2Score) {
-        this.player2Score = player2Score;
+    public void setGuestScore(Integer guestScore) {
+        this.guestScore = guestScore;
     }
 
     public GameUpdateResponse() {

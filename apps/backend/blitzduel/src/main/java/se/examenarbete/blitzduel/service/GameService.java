@@ -46,10 +46,10 @@ public class GameService {
         GameSession session = getGameSession(lobbyCode)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
 
-        if(playerNickname.equals(session.getPlayer1Nickname())){
-            session.setPlayer1Answer(answerIndex);
-        } else if(playerNickname.equals(session.getPlayer2Nickname())) {
-            session.setPlayer2Answer(answerIndex);
+        if(playerNickname.equals(session.getHostName())){
+            session.setHostNameAnswer(answerIndex);
+        } else if(playerNickname.equals(session.getGuestName())) {
+            session.setGuestNameAnswer(answerIndex);
         }
 
         if (!session.bothAnswered()){
@@ -61,15 +61,15 @@ public class GameService {
         Question currentQuestion = getCurrentQuestion(lobbyCode);
         int correctAnswer = currentQuestion.getCorrectAnswerIndex();
 
-        boolean player1Correct = session.getPlayer1Answer() == correctAnswer;
-        boolean player2Correct = session.getPlayer2Answer() == correctAnswer;
+        boolean player1Correct = session.getHostNameAnswer() == correctAnswer;
+        boolean player2Correct = session.getGuestNameAnswer() == correctAnswer;
 
-        if (session.getPlayer1Answer() == correctAnswer){
-            session.setPlayer1Score(session.getPlayer1Score() + 1);
+        if (session.getHostNameAnswer() == correctAnswer){
+            session.setHostNameScore(session.getHostNameScore() + 1);
         }
 
-        if (session.getPlayer2Answer() == correctAnswer){
-            session.setPlayer2Score(session.getPlayer2Score() + 1);
+        if (session.getGuestNameAnswer() == correctAnswer){
+            session.setGuestNameScore(session.getGuestNameScore() + 1);
         }
 
         session.setCurrentQuestionIndex(session.getCurrentQuestionIndex() + 1);
@@ -77,11 +77,11 @@ public class GameService {
 
         GameUpdateResponse response =  new GameUpdateResponse();
         response.setStatus("BOTH_ANSWERED");
-        response.setCorrectAnswer(correctAnswer);
-        response.setPlayer1Correct(player1Correct);
-        response.setPlayer2Correct(player2Correct);
-        response.setPlayer1Score(session.getPlayer1Score());
-        response.setPlayer2Score(session.getPlayer2Score());
+        response.setCorrectAnswerIndex(correctAnswer);
+        response.setHostCorrect(player1Correct);
+        response.setGuestCorrect(player2Correct);
+        response.setHostScore(session.getHostNameScore());
+        response.setGuestScore(session.getGuestNameScore());
 
         if (session.isGameOver()){
             response.setStatus("GAME_OVER");

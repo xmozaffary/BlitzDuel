@@ -2,25 +2,25 @@ package se.examenarbete.blitzduel.dto;
 
 public class SubmitAnswerRequest {
 
-    private String playerNickname;
+    private String name;
     private Integer answerIndex;
 
     public SubmitAnswerRequest() {
 
     }
 
-    public SubmitAnswerRequest(String playerNickname, Integer answerIndex) {
-        this.playerNickname = playerNickname;
+    public SubmitAnswerRequest(String name, Integer answerIndex) {
+        this.name = name;
         this.answerIndex = answerIndex;
     }
 
 
-    public String getPlayerNickname(){
-        return playerNickname;
+    public String getName(){
+        return name;
     }
 
-    public void setPlayerNickname(String playerNickname){
-        this.playerNickname = playerNickname;
+    public void setName(String name){
+        this.name = name;
     }
 
     public int getAnswerIndex(){

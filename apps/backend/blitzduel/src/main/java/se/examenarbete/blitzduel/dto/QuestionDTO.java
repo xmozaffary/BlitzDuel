@@ -5,7 +5,7 @@ import java.util.List;
 public class QuestionDTO {
 
     private String type;
-    private Integer questionIndex;
+    private Integer currentQuestionIndex;
     private String questionText;
     private List<String> options;
 
@@ -17,12 +17,12 @@ public class QuestionDTO {
         this.type = type;
     }
 
-    public Integer getQuestionIndex() {
-        return questionIndex;
+    public Integer getCurrentQuestionIndex() {
+        return currentQuestionIndex;
     }
 
-    public void setQuestionIndex(Integer questionIndex) {
-        this.questionIndex = questionIndex;
+    public void setCurrentQuestionIndex(Integer currentQuestionIndex) {
+        this.currentQuestionIndex = currentQuestionIndex;
     }
 
     public String getQuestionText() {
@@ -45,9 +45,9 @@ public class QuestionDTO {
 
     }
 
-    public QuestionDTO(String type, Integer questionIndex, String questionText, List<String> options) {
+    public QuestionDTO(String type, Integer currentQuestionIndex, String questionText, List<String> options) {
         this.type = type;
-        this.questionIndex = questionIndex;
+        this.currentQuestionIndex = currentQuestionIndex;
         this.questionText = questionText;
         this.options = options;
     }

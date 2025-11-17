@@ -2,38 +2,38 @@ package se.examenarbete.blitzduel.dto;
 
 public class LobbyResponse {
 
-    private String code;
+    private String lobbyCode;
     private String status;
     private Long quizId;
-    private String player1;
-    private String player2;
+    private String hostName;
+    private String guestName;
 
     public LobbyResponse() {
     }
 
-    public LobbyResponse(String code, String status, Long quizId, String player1, String player2){
-        this.code = code;
+    public LobbyResponse(String lobbyCode, String status, Long quizId, String hostName, String guestName){
+        this.lobbyCode = lobbyCode;
         this.status = status;
         this.quizId = quizId;
-        this.player1 = player1;
-        this.player2 = player2;
+        this.hostName = hostName;
+        this.guestName = guestName;
     }
 
 
-    public String getCode() {
-        return code;
+    public String getLobbyCode() {
+        return lobbyCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setLobbyCode(String lobbyCode) {
+        this.lobbyCode = lobbyCode;
     }
 
-    public String getPlayer1() {
-        return player1;
+    public String getHostName() {
+        return hostName;
     }
 
-    public void setPlayer1(String player1) {
-        this.player1 = player1;
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 
     public Long getQuizId() {
@@ -44,12 +44,12 @@ public class LobbyResponse {
         this.quizId = quizId;
     }
 
-    public String getPlayer2() {
-        return player2;
+    public String getGuestName() {
+        return guestName;
     }
 
-    public void setPlayer2(String player2) {
-        this.player2 = player2;
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
     }
 
     public String getStatus() {

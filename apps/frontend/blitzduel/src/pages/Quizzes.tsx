@@ -27,12 +27,6 @@ const Quizzes = () => {
     try {
       const data = await get<Quiz[]>(`${API_BASE_URL}/quizzes`);
       setQuizzes(data);
-      console.log(data[0].title);
-      console.log(data[0].description);
-      console.log(data[0].category);
-      console.log(data[0].category);
-      console.log(data[0].totalQuestions);
-      console.log(data[0].id);
     } catch (error) {
       console.error("Failed to fetch Quizzes", error);
     } finally {

@@ -43,7 +43,7 @@ public class LobbyService {
             return Optional.empty();
         }
 
-        lobby.setPlayer2Nickname(nickname);
+        lobby.setGuestName(nickname);
         lobby.setStatus(Lobby.Status.READY);
 
         System.out.println("Player joined: " + lobby);

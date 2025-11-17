@@ -27,16 +27,16 @@ public class LobbyController {
     @MessageMapping("/lobby/create")
     @SendToUser("/queue/lobby")
     public LobbyResponse createLobby(CreateLobbyRequest request){
-        System.out.println("Create lobby request from: " + request.getNickname());
+        System.out.println("Create lobby request from: " + request.getName());
 
-        Lobby lobby = lobbyService.createLobby(request.getNickname(), request.getQuizId());
+        Lobby lobby = lobbyService.createLobby(request.getName(), request.getQuizId());
 
 
         return new LobbyResponse(
-                lobby.getCode(),
+                lobby.getLobbyCode(),
                 lobby.getStatus().name(),
                 lobby.getQuizId(),
-                lobby.getPlayer1Nickname(),
+                lobby.getHostName(),
                 null
         );
     }
@@ -47,9 +47,9 @@ public class LobbyController {
             JoinLobbyRequest request,
             Principal principal
     ) {
-        System.out.println("Join lobby request: " + code + " from: " + request.getNickname());
+        System.out.println("Join lobby request: " + code + " from: " + request.getName());
 
-        Optional<Lobby> lobbyOpt = lobbyService.joinLobby(code, request.getNickname());
+        Optional<Lobby> lobbyOpt = lobbyService.joinLobby(code, request.getName());
 
         if(lobbyOpt.isEmpty()){
             System.out.println("=== SENDING FULL MESSAGE ===");
@@ -63,18 +63,18 @@ public class LobbyController {
                     "/queue/lobby",
                     errorResponse
             );
-            System.out.println("Sent FULL message to " + request.getNickname());
+            System.out.println("Sent FULL message to " + request.getName());
             return;
         }
 
         Lobby lobby = lobbyOpt.get();
 
         LobbyResponse successResponse = new LobbyResponse(
-                lobby.getCode(),
+                lobby.getLobbyCode(),
                 lobby.getStatus().name(),
                 lobby.getQuizId(),
-                lobby.getPlayer1Nickname(),
-                lobby.getPlayer2Nickname()
+                lobby.getHostName(),
+                lobby.getGuestName()
         );
         messagingTemplate.convertAndSend(
                 "/topic/lobby/" + code,

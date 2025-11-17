@@ -40,8 +40,8 @@ public class GameController {
         GameSession session = gameService.startGame(
                 lobbyCode,
                 lobby.getQuizId(),
-                lobby.getPlayer1Nickname(),
-                lobby.getPlayer2Nickname()
+                lobby.getHostName(),
+                lobby.getGuestName()
         );
 
         Question question = gameService.getCurrentQuestion(lobbyCode);
@@ -49,9 +49,20 @@ public class GameController {
         QuestionDTO dto = new QuestionDTO(
                 "QUESTION",
                 session.getCurrentQuestionIndex(),
-                question.getText(),
-                question.getAnswers()
+                question.getQuestionText(),
+                question.getOptions()
         );
+
+        simpMessagingTemplate.convertAndSend(
+                "/topic/lobby/" + lobbyCode + "/start",
+                "GAME_STARTING"
+        );
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         simpMessagingTemplate.convertAndSend(
                 "/topic/game/" + lobbyCode,
@@ -62,13 +73,13 @@ public class GameController {
 
     @MessageMapping("/game/{lobbyCode}/answer")
     public void submitAnswer(@DestinationVariable String lobbyCode, SubmitAnswerRequest request){
-        System.out.println("Answer form: " + request.getPlayerNickname() +
+        System.out.println("Answer form: " + request.getName() +
                 ": " + request.getAnswerIndex());
 
 
         GameUpdateResponse response = gameService.submitAnswer(
                 lobbyCode,
-                request.getPlayerNickname(),
+                request.getName(),
                 request.getAnswerIndex()
         );
 
@@ -92,8 +103,8 @@ public class GameController {
             QuestionDTO nextDto = new QuestionDTO(
                     "QUESTION",
                     session.getCurrentQuestionIndex(),
-                    nextQuestion.getText(),
-                    nextQuestion.getAnswers()
+                    nextQuestion.getQuestionText(),
+                    nextQuestion.getOptions()
             );
 
             simpMessagingTemplate.convertAndSend(

@@ -3,8 +3,8 @@ package se.examenarbete.blitzduel.dto;
 public class QuizResultResponse {
     private String lobbyCode;
     private String winner;
-    private int player1Score;
-    private int player2Score;
+    private int hostNameScore;
+    private int guestNameScore;
     private String status;
 
     public String getLobbyCode() {
@@ -23,20 +23,20 @@ public class QuizResultResponse {
         this.winner = winner;
     }
 
-    public int getPlayer1Score() {
-        return player1Score;
+    public int getHostNameScore() {
+        return hostNameScore;
     }
 
-    public void setPlayer1Score(int player1Score) {
-        this.player1Score = player1Score;
+    public void setHostNameScore(int hostNameScore) {
+        this.hostNameScore = hostNameScore;
     }
 
-    public int getPlayer2Score() {
-        return player2Score;
+    public int getGuestNameScore() {
+        return guestNameScore;
     }
 
-    public void setPlayer2Score(int player2Score) {
-        this.player2Score = player2Score;
+    public void setGuestNameScore(int guestNameScore) {
+        this.guestNameScore = guestNameScore;
     }
 
     public String getStatus() {
@@ -47,11 +47,11 @@ public class QuizResultResponse {
         this.status = status;
     }
 
-    public QuizResultResponse(String lobbyCode, String winner, int player1Score, int player2Score, String status) {
+    public QuizResultResponse(String lobbyCode, String winner, int hostNameScore, int guestNameScore, String status) {
         this.lobbyCode = lobbyCode;
         this.winner = winner;
-        this.player1Score = player1Score;
-        this.player2Score = player2Score;
+        this.hostNameScore = hostNameScore;
+        this.guestNameScore = guestNameScore;
         this.status = status;
     }
 }

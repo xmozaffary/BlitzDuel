@@ -1,20 +1,24 @@
 import { useState } from "react";
 import { useWebSocket } from "../hooks/useWebSocket";
 import type { IMessage } from "@stomp/stompjs";
-import type { LobbyRequest, LobbyUpdate } from "../types/lobby";
+import type {JoinLobbyRequest,  LobbyUpdate} from "../types/lobby";
 import { Button } from "./Button";
+import {useNavigate} from "react-router-dom";
 
 const JoinLobby = () => {
-  const [nickname, setNickname] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const [joinCode, setJoinCode] = useState<string>("");
   const [joined, setJoined] = useState<boolean>(false);
   const { logs, addLog, createClient } = useWebSocket();
+  const navigate = useNavigate();
 
   const handleJoinLobby = (): void => {
-    if (!nickname || !joinCode) {
+    if (!name || !joinCode) {
       alert("Enter nickname and lobby code!");
       return;
     }
+
+    localStorage.setItem("playerName", name);
 
     const client = createClient((client) => {
       addLog(`✅ Connected to WebSocket`);
@@ -34,8 +38,13 @@ const JoinLobby = () => {
         setJoined(true);
       });
 
+      client.subscribe(`/topic/lobby/${joinCode}/start`, () => {
+          addLog("🎮 Game starting! Navigating...");
+          navigate(`/game/${joinCode}`);
+      });
+
       setTimeout(() => {
-        const payLoad: LobbyRequest = { nickname, quizId:1 };
+        const payLoad: JoinLobbyRequest = { name };
         client.publish({
           destination: `/app/lobby/${joinCode}/join`,
           body: JSON.stringify(payLoad),
@@ -54,8 +63,8 @@ const JoinLobby = () => {
       <input
         type="text"
         placeholder="Ditt nickname"
-        value={nickname}
-        onChange={(e) => setNickname(e.target.value)}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
       />
 
       <input

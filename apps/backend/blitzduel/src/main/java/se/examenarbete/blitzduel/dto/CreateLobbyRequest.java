@@ -2,18 +2,18 @@ package se.examenarbete.blitzduel.dto;
 
 public class CreateLobbyRequest {
 
-    private String nickname;
+    private String name;
     private Long quizId;
 
     public CreateLobbyRequest() {
     }
 
-    public CreateLobbyRequest(String nickname) {
-        this.nickname = nickname;
+    public CreateLobbyRequest(String name) {
+        this.name = name;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getName() {
+        return name;
     }
 
     public Long getQuizId() {
@@ -24,7 +24,7 @@ public class CreateLobbyRequest {
         this.quizId = quizId;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setName(String name) {
+        this.name = name;
     }
 }

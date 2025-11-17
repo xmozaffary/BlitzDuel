@@ -4,7 +4,7 @@ import java.util.List;
 
 public class QuizAnswerRequest {
     private String lobbyCode;
-    protected String nickname;
+    protected String name;
     private List<Integer> answers;
 
     public String getLobbyCode() {
@@ -15,12 +15,12 @@ public class QuizAnswerRequest {
         this.lobbyCode = lobbyCode;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getName() {
+        return name;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<Integer> getAnswers() {
@@ -31,9 +31,9 @@ public class QuizAnswerRequest {
         this.answers = answers;
     }
 
-    public QuizAnswerRequest(String lobbyCode, String nickname, List<Integer> answers) {
+    public QuizAnswerRequest(String lobbyCode, String name, List<Integer> answers) {
         this.lobbyCode = lobbyCode;
-        this.nickname = nickname;
+        this.name = name;
         this.answers = answers;
     }
 }

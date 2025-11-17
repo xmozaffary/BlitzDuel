@@ -4,41 +4,41 @@ public class GameSession {
 
     private final String lobbyCode;
     private final Long quizId;
-    private final String player1Nickname;
-    private final String player2Nickname;
+    private final String hostName;
+    private final String guestName;
 
     private int currentQuestionIndex;
-    private int player1Score;
-    private int player2Score;
+    private int hostNameScore;
+    private int guestNameScore;
 
-    private Integer player1Answer;
-    private Integer player2Answer;
+    private Integer hostNameAnswer;
+    private Integer guestNameAnswer;
 
-    public GameSession(String lobbyCode, Long quizId, String player1Nickname, String player2Nickname) {
+    public GameSession(String lobbyCode, Long quizId, String hostName, String guestName) {
         this.lobbyCode = lobbyCode;
         this.quizId = quizId;
-        this.player1Nickname = player1Nickname;
-        this.player2Nickname = player2Nickname;
+        this.hostName = hostName;
+        this.guestName = guestName;
     }
 
     public void setCurrentQuestionIndex(int currentQuestionIndex) {
         this.currentQuestionIndex = currentQuestionIndex;
     }
 
-    public void setPlayer1Score(int player1Score) {
-        this.player1Score = player1Score;
+    public void setHostNameScore(int hostNameScore) {
+        this.hostNameScore = hostNameScore;
     }
 
-    public void setPlayer2Score(int player2Score) {
-        this.player2Score = player2Score;
+    public void setGuestNameScore(int guestNameScore) {
+        this.guestNameScore = guestNameScore;
     }
 
-    public void setPlayer1Answer(Integer player1Answer) {
-        this.player1Answer = player1Answer;
+    public void setHostNameAnswer(Integer hostNameAnswer) {
+        this.hostNameAnswer = hostNameAnswer;
     }
 
-    public void setPlayer2Answer(Integer player2Answer) {
-        this.player2Answer = player2Answer;
+    public void setGuestNameAnswer(Integer guestNameAnswer) {
+        this.guestNameAnswer = guestNameAnswer;
     }
 
     public String getLobbyCode() {
@@ -49,42 +49,42 @@ public class GameSession {
         return quizId;
     }
 
-    public String getPlayer1Nickname() {
-        return player1Nickname;
+    public String getHostName() {
+        return hostName;
     }
 
-    public String getPlayer2Nickname() {
-        return player2Nickname;
+    public String getGuestName() {
+        return guestName;
     }
 
     public int getCurrentQuestionIndex() {
         return currentQuestionIndex;
     }
 
-    public int getPlayer1Score() {
-        return player1Score;
+    public int getHostNameScore() {
+        return hostNameScore;
     }
 
-    public int getPlayer2Score() {
-        return player2Score;
+    public int getGuestNameScore() {
+        return guestNameScore;
     }
 
-    public Integer getPlayer1Answer() {
-        return player1Answer;
+    public Integer getHostNameAnswer() {
+        return hostNameAnswer;
     }
 
-    public Integer getPlayer2Answer() {
-        return player2Answer;
+    public Integer getGuestNameAnswer() {
+        return guestNameAnswer;
     }
 
     public boolean bothAnswered() {
-        return player1Answer != null && player2Answer != null;
+        return hostNameAnswer != null && guestNameAnswer != null;
     }
 
 
     public void resetAnswers() {
-        this.player1Answer = null;
-        this.player2Answer = null;
+        this.hostNameAnswer = null;
+        this.guestNameAnswer = null;
     }
 
     public boolean isGameOver() {

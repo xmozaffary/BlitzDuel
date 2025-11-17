@@ -12,33 +12,33 @@ public class Lobby {
         FINISHED
     }
 
-    private final String code;
+    private final String lobbyCode;
     private final Long quizId;
-    private final String player1Nickname;
-    private String player2Nickname;
+    private final String hostName;
+    private String guestName;
     private Status status;
     private final LocalDateTime createdAt;
 
 
 
-    public Lobby(String code, Long quizId, String player1Nickname){
-        this.code = code;
+    public Lobby(String lobbyCode, Long quizId, String hostName){
+        this.lobbyCode = lobbyCode;
         this.quizId = quizId;
-        this.player1Nickname = player1Nickname;
+        this.hostName = hostName;
         this.status = Status.WAITING;
         this.createdAt = LocalDateTime.now();
     }
 
-    public String getCode(){
-        return code;
+    public String getLobbyCode(){
+        return lobbyCode;
     }
 
-    public String getPlayer1Nickname(){
-        return player1Nickname;
+    public String getHostName(){
+        return hostName;
     }
 
-    public String getPlayer2Nickname(){
-        return player2Nickname;
+    public String getGuestName(){
+        return guestName;
     }
 
     public Status getStatus(){
@@ -53,8 +53,8 @@ public class Lobby {
         return createdAt;
     }
 
-    public void setPlayer2Nickname(String player2Nickname){
-        this.player2Nickname = player2Nickname;
+    public void setGuestName(String guestName){
+        this.guestName = guestName;
     }
 
     public void setStatus(Status status ) {
@@ -62,7 +62,7 @@ public class Lobby {
     }
 
     public boolean isFull() {
-        return player2Nickname != null;
+        return guestName != null;
     }
 
     public boolean isWaiting() {
@@ -77,9 +77,9 @@ public class Lobby {
     @Override
     public String toString(){
         return "Lobby{" +
-                "code='" + code + '\'' +
-                ", player1='" + player1Nickname + '\'' +
-                ", player2='" + player2Nickname + '\'' +
+                "code='" + lobbyCode + '\'' +
+                ", player1='" + hostName + '\'' +
+                ", player2='" + guestName + '\'' +
                 ", status='" + status + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 '}';

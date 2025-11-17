@@ -4,24 +4,24 @@ import java.util.List;
 
 public class Question {
 
-    private Long id;
-    private Long quizId;
-    private final String text;
-    private final List<String> answers;
+    private final Long id;
+    private final Long quizId;
+    private final String questionText;
+    private final List<String> options;
     private final int correctAnswerIndex;
     private final int timeLimit;
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public String getText() {
-        return text;
+    public String getQuestionText() {
+        return questionText;
     }
 
-    public List<String> getAnswers() {
-        return answers;
+    public List<String> getOptions() {
+        return options;
     }
 
     public int getCorrectAnswerIndex() {
@@ -36,10 +36,10 @@ public class Question {
         return timeLimit;
     }
 
-    public Question(Long id , String text, List<String> questionAlternatives, int correctAnswerIndex, int timeLimit, Long quizId) {
+    public Question(Long id , String questionText, List<String> options, int correctAnswerIndex, int timeLimit, Long quizId) {
         this.id = id;
-        this.text = text;
-        this.answers = questionAlternatives;
+        this.questionText = questionText;
+        this.options = options;
         this.correctAnswerIndex = correctAnswerIndex;
         this.timeLimit = timeLimit;
         this.quizId = quizId;
