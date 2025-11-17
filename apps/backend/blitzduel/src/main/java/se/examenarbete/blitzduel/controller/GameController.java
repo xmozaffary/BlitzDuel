@@ -68,6 +68,7 @@ public class GameController {
                 "/topic/game/" + lobbyCode,
                 dto
         );
+
     }
 
 
@@ -87,7 +88,11 @@ public class GameController {
             System.out.println("Waiting for other player...");
             return;
         }
-
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
 
 
@@ -96,22 +101,34 @@ public class GameController {
                 response
         );
 
-        if (response.getStatus().equals("BOTH_ANSWERED")){
-            Question nextQuestion = gameService.getCurrentQuestion(lobbyCode);
-            GameSession session = gameService.getGameSession(lobbyCode).get();
-
-            QuestionDTO nextDto = new QuestionDTO(
-                    "QUESTION",
-                    session.getCurrentQuestionIndex(),
-                    nextQuestion.getQuestionText(),
-                    nextQuestion.getOptions()
-            );
-
-            simpMessagingTemplate.convertAndSend(
-                    "/topic/game/" + lobbyCode,
-                    nextDto
-            );
-        }
         System.out.println("Sent reponse with status: " + response.getStatus());
+        if (response.getStatus().equals("BOTH_ANSWERED")){
+
+            new Thread(() -> {
+
+                try {
+                    Thread.sleep(3000);
+                    Question nextQuestion = gameService.getCurrentQuestion(lobbyCode);
+                    GameSession session = gameService.getGameSession(lobbyCode).get();
+
+                    QuestionDTO nextDto = new QuestionDTO(
+                            "QUESTION",
+                            session.getCurrentQuestionIndex(),
+                            nextQuestion.getQuestionText(),
+                            nextQuestion.getOptions()
+                    );
+
+                    simpMessagingTemplate.convertAndSend(
+                            "/topic/game/" + lobbyCode,
+                            nextDto
+                    );
+
+                    System.out.println("Sent next question after delay");
+
+                } catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }).start();
+        }
     }
 }

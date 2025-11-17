@@ -18,7 +18,7 @@ const JoinLobby = () => {
       return;
     }
 
-    localStorage.setItem("playerName", name);
+    sessionStorage.setItem("playerName", name);
 
     const client = createClient((client) => {
       addLog(`✅ Connected to WebSocket`);

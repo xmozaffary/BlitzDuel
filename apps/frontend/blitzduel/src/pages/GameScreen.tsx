@@ -15,7 +15,7 @@ const GameScreen = () =>{
 
 
     useEffect(() => {
-        const name = localStorage.getItem("playerName") ?? "";
+        const name = sessionStorage.getItem("playerName") ?? "Unknown";
         setPlayerName(name);
     }, []);
 
@@ -37,8 +37,10 @@ const GameScreen = () =>{
                     setResult(null);
                 } else if (data.status === "BOTH_ANSWERED") {
                     setResult(data as ResultData);
+                    setCurrentQuestion(null);
                 } else if (data.status === "GAME_OVER") {
                     setGameOver(true);
+                    setResult(data as ResultData);
                 }
             });
         });
@@ -70,14 +72,14 @@ const GameScreen = () =>{
             <div className="game-screen">
                 <h1> Spelet Över!</h1>
                 <h2>Slutresultat</h2>
-                <p>Spelare 1: {result.hostScore}</p>
-                <p>Spelare 2: {result.guestScore}</p>
+                <p>Host: : {result.hostScore}</p>
+                <p>Guest: {result.guestScore}</p>
                 <h3>
                     Winner: {" "}
                     {result.hostScore > result.guestScore
-                    ? "Spelare 1"
+                    ? "Host"
                     : result.guestScore > result.hostScore
-                    ? "Spelare 2"
+                    ? "Guest"
                     : "Oavgjort!"}
                 </h3>
             </div>

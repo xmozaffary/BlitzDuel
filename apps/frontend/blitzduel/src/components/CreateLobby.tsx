@@ -21,7 +21,7 @@ const CreateLobby = () => {
       alert("Enter nickname");
       return;
     }
-    localStorage.setItem("playerName", name);
+    sessionStorage.setItem('playerName', name);
 
     if(!quizId) {
         alert("No quiz selected! Go back and select a quiz.");
