@@ -1,0 +1,36 @@
+.score-board {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  min-width: 250px;
+  height: fit-content;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+  h3 {
+    margin: 0 0 1.5rem 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .score-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+
+    .player-name {
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .score {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #667eea;
+    }
+  }
+}

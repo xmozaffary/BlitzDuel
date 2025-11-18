@@ -2,10 +2,10 @@
   width: 160px;
   height: 185px;
   position: relative;
-  background: #fff;
+  background: #51cf66;
   border-radius: 100px 100px 0 0;
 }
-.loader:after {
+.spinner:after {
   content: "";
   position: absolute;
   width: 100px;
@@ -28,7 +28,7 @@
     50% 50px, 50% 22px, 50% 45px;
   animation: faceLift 3s linear infinite alternate;
 }
-.loader:before {
+.spinner:before {
   content: "";
   position: absolute;
   width: 140%;

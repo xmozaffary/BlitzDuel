@@ -107,7 +107,7 @@ public class GameController {
             new Thread(() -> {
 
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
                     Question nextQuestion = gameService.getCurrentQuestion(lobbyCode);
                     GameSession session = gameService.getGameSession(lobbyCode).get();
 
