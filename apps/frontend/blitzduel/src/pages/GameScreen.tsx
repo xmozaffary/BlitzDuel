@@ -6,6 +6,7 @@ import { useWebSocket } from "../hooks/useWebSocket.ts";
 import GameOverScreen from "./GameOverScreen";
 import { ScoreBoard } from "../components/ScoreBoard.tsx";
 import { Spinner } from "../components/Spinner.tsx";
+import { AnswerButton } from "../components/AnswerButton.tsx";
 
 const GameScreen = () => {
   const { lobbyCode } = useParams<{ lobbyCode: string }>();
@@ -15,11 +16,18 @@ const GameScreen = () => {
   );
   const [result, setResult] = useState<ResultData | null>(null);
   const [gameOver, setGameOver] = useState(false);
-  const { createClient, addLog, logs } = useWebSocket();
+  const { createClient, addLog } = useWebSocket();
   const [playerName, setPlayerName] = useState<string>("");
 
   const [hostScore, setHostScore] = useState(0);
   const [guestScore, setGuestScore] = useState(0);
+
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [answerState, setAnswerState] = useState<
+    "selected" | "correct" | "incorrect" | null
+  >(null);
+
+  const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
     const name = sessionStorage.getItem("playerName") ?? "Unknown";
@@ -35,6 +43,7 @@ const GameScreen = () => {
 
       client.subscribe(`/topic/game/${lobbyCode}`, (message: IMessage) => {
         const data = JSON.parse(message.body);
+        console.log("object: ");
         console.log(data);
 
         addLog(` Game message: ${data.type || data.status}`);
@@ -42,11 +51,31 @@ const GameScreen = () => {
         if (data.type === "QUESTION") {
           setCurrentQuestion(data as QuestionData);
           setResult(null);
+          setSelectedAnswer(null);
+          setAnswerState(null);
+          setShowResult(false);
         } else if (data.status === "BOTH_ANSWERED") {
           setResult(data as ResultData);
+
+          console.log("BOTH_ANSWERED");
+          console.log(data.correctAnswerIndex);
+
           setHostScore(data.hostScore);
           setGuestScore(data.guestScore);
-          setCurrentQuestion(null);
+
+          console.log("innan is correct : " + selectedAnswer);
+
+          const isCorrect = selectedAnswer === data.correctAnswerIndex;
+
+          console.log("efter is correct : " + selectedAnswer);
+
+          setAnswerState(isCorrect ? "correct" : "incorrect");
+
+          setShowResult(false);
+
+          setTimeout(() => {
+            setShowResult(true);
+          }, 3000);
         } else if (data.status === "GAME_OVER") {
           setGameOver(true);
           setResult(data as ResultData);
@@ -59,10 +88,13 @@ const GameScreen = () => {
     return () => {
       newClient.deactivate();
     };
-  }, [lobbyCode]);
+  }, [lobbyCode, selectedAnswer]);
 
   const handleAnswer = (answerIndex: number) => {
-    if (!client || !lobbyCode) return;
+    if (!client || !lobbyCode || selectedAnswer !== null) return;
+
+    setSelectedAnswer(answerIndex);
+    setAnswerState("selected");
 
     client.publish({
       destination: `/app/game/${lobbyCode}/answer`,
@@ -72,6 +104,7 @@ const GameScreen = () => {
       }),
     });
 
+    console.log("Du har klickad på: " + answerIndex);
     addLog(`Send answer: ${answerIndex}`);
   };
 
@@ -81,7 +114,7 @@ const GameScreen = () => {
     return <GameOverScreen scores={scores} playerNames={playerNames} />;
   }
 
-  if (result) {
+  if (result && showResult) {
     return (
       <div className="game-screen">
         <div className="loading-wrapper">
@@ -94,11 +127,10 @@ const GameScreen = () => {
   if (!currentQuestion) {
     return (
       <div className="game-screen">
-        <h2>Väntar på att matchen ska starta...</h2>
-        <div className="logs">
-          {logs.map((log, idx) => (
-            <div key={idx}>{log}</div>
-          ))}
+        <div className="waiting-simple">
+          <div className="pulse-icon">⚡</div>
+          <h2>Matchen startar...</h2>
+          <div className="loading-bar"></div>
         </div>
       </div>
     );
@@ -118,20 +150,17 @@ const GameScreen = () => {
 
         <div className="options-grid">
           {currentQuestion.options.map((option, index) => (
-            <button
-              className="option-button"
+            <AnswerButton
               key={index}
-              onClick={() => handleAnswer(index)}
-            >
-              {option}
-            </button>
+              option={option}
+              index={index}
+              onAnswer={handleAnswer}
+              disabled={selectedAnswer !== null}
+              isSelected={selectedAnswer == index}
+              answerState={selectedAnswer === index ? answerState : null}
+            />
           ))}
         </div>
-        {/* <div className="logs">
-          {logs.map((log, idx) => (
-            <div key={idx}>{log}</div>
-          ))}
-        </div> */}
       </div>
     </div>
   );
