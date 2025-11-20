@@ -108,7 +108,7 @@ const GameScreen = () => {
 
   if (gameOver && result) {
     const scores = { host: hostScore, guest: guestScore };
-    const playerNames = { host: "host", guest: "guest" };
+    const playerNames = { host: hostName, guest: guestName };
     return <GameOverScreen scores={scores} playerNames={playerNames} />;
   }
 

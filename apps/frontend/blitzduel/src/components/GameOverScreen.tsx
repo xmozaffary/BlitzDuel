@@ -57,7 +57,10 @@ const GameOverScreen: React.FC<GameOverScreenProps> = ({
               className={`final-score-box ${
                 winner === playerNames.guest ? "winner" : ""
               }`}
-            ></div>
+            >
+              <span className="final-player" >{playerNames.guest}</span>
+              <span className="final-score" >{scores.guest}</span>
+              <span className="final-label" >poäng</span>
           </div>
         </div>
 
@@ -69,6 +72,7 @@ const GameOverScreen: React.FC<GameOverScreenProps> = ({
             Tillbaka till start
           </button>
         </div>
+      </div>
       </div>
     </div>
   );
