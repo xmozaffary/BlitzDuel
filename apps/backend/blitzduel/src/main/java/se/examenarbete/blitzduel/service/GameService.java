@@ -82,6 +82,8 @@ public class GameService {
         response.setGuestCorrect(player2Correct);
         response.setHostScore(session.getHostNameScore());
         response.setGuestScore(session.getGuestNameScore());
+        response.setHostName(session.getHostName());
+        response.setGuestName(session.getGuestName());
 
         if (session.isGameOver()){
             response.setStatus("GAME_OVER");

@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useWebSocket } from "../hooks/useWebSocket";
 import type { IMessage } from "@stomp/stompjs";
-import type {JoinLobbyRequest,  LobbyUpdate} from "../types/lobby";
+import type { JoinLobbyRequest, LobbyUpdate } from "../types/lobby";
 import { Button } from "./Button";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { usePlayer } from "../contexts/PlayerContext";
 
 const JoinLobby = () => {
   const [name, setName] = useState<string>("");
+  const { setPlayerName, setPlayerRole } = usePlayer();
   const [joinCode, setJoinCode] = useState<string>("");
   const [joined, setJoined] = useState<boolean>(false);
   const { logs, addLog, createClient } = useWebSocket();
@@ -18,7 +20,8 @@ const JoinLobby = () => {
       return;
     }
 
-    sessionStorage.setItem("playerName", name);
+    setPlayerName(name);
+    setPlayerRole("guest");
 
     const client = createClient((client) => {
       addLog(`✅ Connected to WebSocket`);
@@ -39,8 +42,8 @@ const JoinLobby = () => {
       });
 
       client.subscribe(`/topic/lobby/${joinCode}/start`, () => {
-          addLog("🎮 Game starting! Navigating...");
-          navigate(`/game/${joinCode}`);
+        addLog("🎮 Game starting! Navigating...");
+        navigate(`/game/${joinCode}`);
       });
 
       setTimeout(() => {

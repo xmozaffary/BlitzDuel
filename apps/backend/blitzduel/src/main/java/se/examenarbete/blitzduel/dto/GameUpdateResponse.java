@@ -8,6 +8,8 @@ public class GameUpdateResponse {
     private Boolean guestCorrect;
     private Integer hostScore;
     private Integer guestScore;
+    private String hostName;
+    private String guestName;
 
     public String getStatus() {
         return status;
@@ -59,5 +61,21 @@ public class GameUpdateResponse {
 
     public GameUpdateResponse() {
 
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
     }
 }

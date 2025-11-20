@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import type { QuestionData, ResultData } from "../types/GameData.ts";
 import type { Client, IMessage } from "@stomp/stompjs";
 import { useWebSocket } from "../hooks/useWebSocket.ts";
-import GameOverScreen from "./GameOverScreen";
+import GameOverScreen from "../components/GameOverScreen.tsx";
 import { ScoreBoard } from "../components/ScoreBoard.tsx";
 import { Spinner } from "../components/Spinner.tsx";
-import { AnswerButton } from "../components/AnswerButton.tsx";
+import { QuestionDisplay } from "../components/QuestionDisplay.tsx";
+import { usePlayer } from "../contexts/PlayerContext.tsx";
 
 const GameScreen = () => {
   const { lobbyCode } = useParams<{ lobbyCode: string }>();
@@ -17,12 +18,16 @@ const GameScreen = () => {
   const [result, setResult] = useState<ResultData | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const { createClient, addLog } = useWebSocket();
-  const [playerName, setPlayerName] = useState<string>("");
+  const { playerName, playerRole } = usePlayer();
 
   const [hostScore, setHostScore] = useState(0);
   const [guestScore, setGuestScore] = useState(0);
 
+  const [hostName, setHostName] = useState<string>("");
+  const [guestName, setGuestName] = useState<string>("");
+
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const selectedAnswerRef = useRef<number | null>(null);
   const [answerState, setAnswerState] = useState<
     "selected" | "correct" | "incorrect" | null
   >(null);
@@ -30,9 +35,8 @@ const GameScreen = () => {
   const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
-    const name = sessionStorage.getItem("playerName") ?? "Unknown";
-    setPlayerName(name);
-  }, []);
+    selectedAnswerRef.current = selectedAnswer;
+  }, [selectedAnswer]);
 
   useEffect(() => {
     if (!lobbyCode) return;
@@ -43,8 +47,6 @@ const GameScreen = () => {
 
       client.subscribe(`/topic/game/${lobbyCode}`, (message: IMessage) => {
         const data = JSON.parse(message.body);
-        console.log("object: ");
-        console.log(data);
 
         addLog(` Game message: ${data.type || data.status}`);
 
@@ -54,20 +56,16 @@ const GameScreen = () => {
           setSelectedAnswer(null);
           setAnswerState(null);
           setShowResult(false);
+
+          if (data.hostName) setHostName(data.hostName);
+          if (data.guestName) setGuestName(data.guestName);
         } else if (data.status === "BOTH_ANSWERED") {
           setResult(data as ResultData);
-
-          console.log("BOTH_ANSWERED");
-          console.log(data.correctAnswerIndex);
-
           setHostScore(data.hostScore);
           setGuestScore(data.guestScore);
 
-          console.log("innan is correct : " + selectedAnswer);
-
-          const isCorrect = selectedAnswer === data.correctAnswerIndex;
-
-          console.log("efter is correct : " + selectedAnswer);
+          const isCorrect =
+            selectedAnswerRef.current === data.correctAnswerIndex;
 
           setAnswerState(isCorrect ? "correct" : "incorrect");
 
@@ -88,7 +86,8 @@ const GameScreen = () => {
     return () => {
       newClient.deactivate();
     };
-  }, [lobbyCode, selectedAnswer]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lobbyCode]);
 
   const handleAnswer = (answerIndex: number) => {
     if (!client || !lobbyCode || selectedAnswer !== null) return;
@@ -104,7 +103,6 @@ const GameScreen = () => {
       }),
     });
 
-    console.log("Du har klickad på: " + answerIndex);
     addLog(`Send answer: ${answerIndex}`);
   };
 
@@ -136,32 +134,28 @@ const GameScreen = () => {
     );
   }
 
+  const isHost = playerRole === "host";
+  const myScore = isHost ? hostScore : guestScore;
+  const opponentScore = isHost ? guestScore : hostScore;
+  const myName = playerName;
+  const opponentName = isHost ? guestName || "Gäst" : hostName || "Värd";
+
   return (
     <div className="game-screen">
-      <ScoreBoard playerScore={hostScore} opponentScore={guestScore} />
-      <div className="question-content">
-        <div className="question-header">
-          <span className="question-number">
-            Fråga {currentQuestion.currentQuestionIndex + 1} / 10
-          </span>
-        </div>
-
-        <h2 className="question-text">{currentQuestion.questionText}</h2>
-
-        <div className="options-grid">
-          {currentQuestion.options.map((option, index) => (
-            <AnswerButton
-              key={index}
-              option={option}
-              index={index}
-              onAnswer={handleAnswer}
-              disabled={selectedAnswer !== null}
-              isSelected={selectedAnswer == index}
-              answerState={selectedAnswer === index ? answerState : null}
-            />
-          ))}
-        </div>
-      </div>
+      <ScoreBoard
+        playerName={myName}
+        playerScore={myScore}
+        opponentName={opponentName}
+        opponentScore={opponentScore}
+      />
+      <QuestionDisplay
+        questionText={currentQuestion.questionText}
+        currentQuestionIndex={currentQuestion.currentQuestionIndex}
+        options={currentQuestion.options}
+        selectedAnswer={selectedAnswer}
+        answerState={answerState}
+        onAnswer={handleAnswer}
+      />
     </div>
   );
 };

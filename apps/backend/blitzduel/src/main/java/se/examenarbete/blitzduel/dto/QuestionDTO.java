@@ -8,6 +8,21 @@ public class QuestionDTO {
     private Integer currentQuestionIndex;
     private String questionText;
     private List<String> options;
+    private String hostName;
+    private String guestName;
+
+    public QuestionDTO() {
+
+    }
+
+    public QuestionDTO(String type, Integer currentQuestionIndex, String questionText, List<String> options, String hostName, String guestName) {
+        this.type = type;
+        this.currentQuestionIndex = currentQuestionIndex;
+        this.questionText = questionText;
+        this.options = options;
+        this.hostName = hostName;
+        this.guestName = guestName;
+    }
 
     public String getType() {
         return type;
@@ -41,14 +56,10 @@ public class QuestionDTO {
         this.options = options;
     }
 
-    public QuestionDTO() {
+    public String getHostName() { return hostName; }
+    public String getGuestName() { return guestName; }
 
-    }
+    public void setHostName(String hostName) { this.hostName = hostName; }
+    public void setGuestName(String guestName) { this.guestName = guestName; }
 
-    public QuestionDTO(String type, Integer currentQuestionIndex, String questionText, List<String> options) {
-        this.type = type;
-        this.currentQuestionIndex = currentQuestionIndex;
-        this.questionText = questionText;
-        this.options = options;
-    }
 }

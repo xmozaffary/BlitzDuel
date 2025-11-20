@@ -3,10 +3,12 @@ import { Button } from "../components/Button";
 import type { LobbyRequest, LobbyResponse, LobbyUpdate } from "../types/lobby";
 import { useWebSocket } from "../hooks/useWebSocket";
 import type { Client, IMessage } from "@stomp/stompjs";
-import {useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { usePlayer } from "../contexts/PlayerContext";
 
 const CreateLobby = () => {
   const [name, setName] = useState<string>("");
+  const { setPlayerName, setPlayerRole } = usePlayer();
   const [lobbyCode, setLobbyCode] = useState<string>("");
   const { logs, addLog, createClient } = useWebSocket();
   const location = useLocation();
@@ -14,30 +16,29 @@ const CreateLobby = () => {
   const quizId = location.state?.quizId;
   const [client, setClient] = useState<Client | null>(null);
 
-
-
-    const handleCreateLobby = (): void => {
+  const handleCreateLobby = (): void => {
     if (!name) {
       alert("Enter nickname");
       return;
     }
-    sessionStorage.setItem('playerName', name);
 
-    if(!quizId) {
-        alert("No quiz selected! Go back and select a quiz.");
-        return;
+    setPlayerName(name);
+    setPlayerRole("host");
+
+    if (!quizId) {
+      alert("No quiz selected! Go back and select a quiz.");
+      return;
     }
 
     const newClient = createClient((client) => {
       addLog(`✅ Connected to WebSocket`);
 
-        setClient(client);
+      setClient(client);
 
       client.subscribe("/user/queue/lobby", (message: IMessage) => {
         const data: LobbyResponse = JSON.parse(message.body);
         addLog(`📨 Lobby created: ${data.lobbyCode} quizId ${data.quizId}`);
         setLobbyCode(data.lobbyCode);
-
 
         client.subscribe(
           `/topic/lobby/${data.lobbyCode}`,
@@ -59,29 +60,29 @@ const CreateLobby = () => {
     newClient.activate();
   };
 
-    const startGame = (): void => {
-        if (!lobbyCode){
-            alert("No lobby code");
-            return;
-        }
+  const startGame = (): void => {
+    if (!lobbyCode) {
+      alert("No lobby code");
+      return;
+    }
 
-        if (!client){
-            alert("No client found!");
-            return;
-        }
+    if (!client) {
+      alert("No client found!");
+      return;
+    }
 
-        navigate(`/game/${lobbyCode}`)
+    navigate(`/game/${lobbyCode}`);
 
-        setTimeout(() => {
-            client.publish({
-                destination: `/app/game/${lobbyCode}/start`,
-                body: JSON.stringify({}),
-            })
-            addLog("Starting game...");
-        }, 500)
-    };
+    setTimeout(() => {
+      client.publish({
+        destination: `/app/game/${lobbyCode}/start`,
+        body: JSON.stringify({}),
+      });
+      addLog("Starting game...");
+    }, 500);
+  };
 
-    return (
+  return (
     <div className="create-lobby">
       <h1>Skapa Lobby</h1>
       <input
@@ -100,7 +101,13 @@ const CreateLobby = () => {
         {logs.map((log, idx) => (
           <div key={idx}>{log}</div>
         ))}
-      </div><Button text="Starta match" variant="secondary"  onClick={startGame} size="large"></Button>
+      </div>
+      <Button
+        text="Starta match"
+        variant="secondary"
+        onClick={startGame}
+        size="large"
+      ></Button>
     </div>
   );
 };

@@ -50,7 +50,9 @@ public class GameController {
                 "QUESTION",
                 session.getCurrentQuestionIndex(),
                 question.getQuestionText(),
-                question.getOptions()
+                question.getOptions(),
+                lobby.getHostName(),
+                lobby.getGuestName()
         );
 
         simpMessagingTemplate.convertAndSend(
@@ -115,7 +117,9 @@ public class GameController {
                             "QUESTION",
                             session.getCurrentQuestionIndex(),
                             nextQuestion.getQuestionText(),
-                            nextQuestion.getOptions()
+                            nextQuestion.getOptions(),
+                            session.getHostName(),
+                            session.getGuestName()
                     );
 
                     simpMessagingTemplate.convertAndSend(
