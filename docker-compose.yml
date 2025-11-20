@@ -9,6 +9,13 @@ services:
     networks:
       - blitzduel-network
     restart: unless-stopped
+    depends_on:
+      - postgres   
+    environment:   
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/blitzduel
+      - SPRING_DATASOURCE_USERNAME=blitz
+      - SPRING_DATASOURCE_PASSWORD=blitz123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   frontend:
     image: ${DOCKER_USERNAME}/blitzduel-frontend:latest
@@ -31,6 +38,38 @@ services:
       - blitzduel-network
     restart: unless-stopped
 
+  postgres:
+    image: postgres:15
+    container_name: blitzduel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: blitz
+      POSTGRES_PASSWORD: blitz123
+      POSTGRES_DB: blitzduel
+    ports:
+      - "5432:5432"
+    networks:
+      - blitzduel-network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: blitzduel-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@blitz.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8081:80"
+    depends_on:
+      - postgres
+    networks:
+      - blitzduel-network
+
 networks:
   blitzduel-network:
     driver: bridge
+
+volumes:
+  postgres-data:
