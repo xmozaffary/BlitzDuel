@@ -1,7 +1,4 @@
 services:
-  # ==========================================
-  # PostgreSQL Database
-  # ==========================================
   postgres:
     image: postgres:15-alpine
     container_name: blitzduel-postgres
@@ -30,9 +27,6 @@ services:
           cpus: '0.25'
           memory: 256M
 
-  # ==========================================
-  # Spring Boot Backend
-  # ==========================================
   backend:
     image: ${DOCKER_USERNAME}/blitzduel-backend:${IMAGE_TAG:-latest}
     container_name: blitzduel-backend
@@ -52,8 +46,8 @@ services:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 90s
+      retries: 5
+      start_period: 120s
     deploy:
       resources:
         limits:
@@ -63,16 +57,12 @@ services:
           cpus: '0.5'
           memory: 512M
 
-  # ==========================================
-  # React Frontend
-  # ==========================================
   frontend:
     image: ${DOCKER_USERNAME}/blitzduel-frontend:${IMAGE_TAG:-latest}
     container_name: blitzduel-frontend
     restart: unless-stopped
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     environment:
       - VITE_API_URL=${BACKEND_URL}
       - VITE_WS_URL=${BACKEND_WS_URL}
@@ -93,9 +83,6 @@ services:
           cpus: '0.25'
           memory: 128M
 
-  # ==========================================
-  # Cloudflare Tunnel
-  # ==========================================
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared-tunnel
