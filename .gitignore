@@ -1,16 +1,28 @@
+# Secrets
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+
+# Build artifacts
+target/
+dist/
+build/
+node_modules/
 
 # IDE
 .idea/
 .vscode/
+*.iml
+*.swp
 
-# Build artifacts
-target/
-node_modules/
-build/
-dist/
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
 *.log
+logs/
+
+# Backup
+*.backup
+*.bak
