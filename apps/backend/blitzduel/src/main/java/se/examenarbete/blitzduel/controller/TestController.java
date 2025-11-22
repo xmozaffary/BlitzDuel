@@ -25,4 +25,9 @@ public class TestController {
     public List<TestEntity> getAllTests() {
         return testRepository.findAll();
     }
+
+    @GetMapping("/hello")
+    public String getHello() {
+        return "Hello";
+    }
 }
