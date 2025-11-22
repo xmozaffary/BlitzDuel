@@ -46,7 +46,7 @@ jobs:
   # ==========================================
   build-backend:
     name: Build Backend
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: detect-changes
     if: needs.detect-changes.outputs.backend == 'true'
     steps:
@@ -91,7 +91,7 @@ jobs:
   # ==========================================
   build-frontend:
     name: Build Frontend
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: detect-changes
     if: needs.detect-changes.outputs.frontend == 'true'
     steps:
@@ -141,110 +141,104 @@ jobs:
   # ==========================================
   deploy:
     name: Deploy to Raspberry Pi
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [detect-changes, build-backend, build-frontend]
     if: always() && !failure() && !cancelled()
+    env:
+      BACKEND_CHANGED: ${{ needs.detect-changes.outputs.backend }}
+      FRONTEND_CHANGED: ${{ needs.detect-changes.outputs.frontend }}
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        env:
-          BACKEND_CHANGED: ${{ needs.detect-changes.outputs.backend }}
-          FRONTEND_CHANGED: ${{ needs.detect-changes.outputs.frontend }}
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: BACKEND_CHANGED,FRONTEND_CHANGED
-          script: |
-            set -e
+      - name: Deploy
+        run: |
+          set -e
+          
+          cd ~/blitzduel
+          
+          echo "📦 Starting deployment..."
+          echo "Backend changed: $BACKEND_CHANGED"
+          echo "Frontend changed: $FRONTEND_CHANGED"
+          
+          # Backup current .env
+          if [ -f .env ]; then
+            BACKUP_FILE=".env.backup.$(date +%Y%m%d_%H%M%S)"
+            cp .env "$BACKUP_FILE"
+            echo "✅ Backed up .env to $BACKUP_FILE"
+          fi
+          
+          # Create .env with production secrets
+          cat > .env << 'ENVEOF'
+          DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+          TUNNEL_TOKEN=${{ secrets.TUNNEL_TOKEN }}
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_NAME=blitzduel
+          FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+          BACKEND_URL=${{ secrets.BACKEND_URL }}
+          BACKEND_WS_URL=${{ secrets.BACKEND_WS_URL }}
+          IMAGE_TAG=latest
+          ENVEOF
+          
+          echo "✅ Updated .env file"
+          
+          # Smart deployment - bara uppdatera vad som ändrats
+          if [ "$BACKEND_CHANGED" = "true" ]; then
+            echo "🐳 Pulling backend image..."
+            docker-compose pull backend
+            echo "🚀 Restarting backend..."
+            docker-compose up -d --no-deps backend
             
-            cd ~/blitzduel
+            echo "⏳ Waiting for backend to be healthy..."
+            sleep 30
             
-            echo "📦 Starting deployment..."
-            echo "Backend changed: $BACKEND_CHANGED"
-            echo "Frontend changed: $FRONTEND_CHANGED"
-            
-            # Backup current .env
-            if [ -f .env ]; then
-              BACKUP_FILE=".env.backup.$(date +%Y%m%d_%H%M%S)"
-              cp .env "$BACKUP_FILE"
-              echo "✅ Backed up .env to $BACKUP_FILE"
-            fi
-            
-            # Create .env with production secrets
-            cat > .env << 'ENVEOF'
-            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-            TUNNEL_TOKEN=${{ secrets.TUNNEL_TOKEN }}
-            DB_USER=${{ secrets.DB_USER }}
-            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            DB_NAME=blitzduel
-            FRONTEND_URL=${{ secrets.FRONTEND_URL }}
-            BACKEND_URL=${{ secrets.BACKEND_URL }}
-            BACKEND_WS_URL=${{ secrets.BACKEND_WS_URL }}
-            IMAGE_TAG=latest
-            ENVEOF
-            
-            echo "✅ Updated .env file"
-            
-            # Smart deployment - bara uppdatera vad som ändrats
-            if [ "$BACKEND_CHANGED" = "true" ]; then
-              echo "🐳 Pulling backend image..."
-              docker-compose pull backend
-              echo "🚀 Restarting backend..."
-              docker-compose up -d --no-deps backend
-              
-              echo "⏳ Waiting for backend to be healthy..."
-              sleep 30
-              
-              if docker exec blitzduel-backend wget --no-verbose --tries=3 --spider http://localhost:8080/actuator/health 2>&1; then
-                echo "✅ Backend is healthy"
-              else
-                echo "❌ Backend health check failed"
-                docker logs blitzduel-backend --tail 50
-                exit 1
-              fi
+            if docker exec blitzduel-backend wget --no-verbose --tries=3 --spider http://localhost:8080/actuator/health 2>&1; then
+              echo "✅ Backend is healthy"
             else
-              echo "⏭️  Backend unchanged, skipping..."
+              echo "❌ Backend health check failed"
+              docker logs blitzduel-backend --tail 50
+              exit 1
             fi
+          else
+            echo "⏭️  Backend unchanged, skipping..."
+          fi
+          
+          if [ "$FRONTEND_CHANGED" = "true" ]; then
+            echo "🐳 Pulling frontend image..."
+            docker-compose pull frontend
+            echo "🚀 Restarting frontend..."
+            docker-compose up -d --no-deps frontend
             
-            if [ "$FRONTEND_CHANGED" = "true" ]; then
-              echo "🐳 Pulling frontend image..."
-              docker-compose pull frontend
-              echo "🚀 Restarting frontend..."
-              docker-compose up -d --no-deps frontend
-              
-              echo "⏳ Waiting for frontend to be healthy..."
-              sleep 15
-              
-              if docker exec blitzduel-frontend wget --no-verbose --tries=3 --spider http://localhost:80/health 2>&1; then
-                echo "✅ Frontend is healthy"
-              else
-                echo "❌ Frontend health check failed"
-                docker logs blitzduel-frontend --tail 50
-                exit 1
-              fi
+            echo "⏳ Waiting for frontend to be healthy..."
+            sleep 15
+            
+            if docker exec blitzduel-frontend wget --no-verbose --tries=3 --spider http://localhost:80/health 2>&1; then
+              echo "✅ Frontend is healthy"
             else
-              echo "⏭️  Frontend unchanged, skipping..."
+              echo "❌ Frontend health check failed"
+              docker logs blitzduel-frontend --tail 50
+              exit 1
             fi
-            
-            # Cloudflare och Postgres körs alltid (om de inte redan körs)
-            echo "🔍 Ensuring postgres and cloudflared are running..."
-            docker-compose up -d postgres cloudflared
-            
-            # Cleanup old images
-            echo "🧹 Cleaning up old images..."
-            docker image prune -af --filter "until=48h"
-            
-            echo "✨ Deployment completed successfully!"
-            echo "📊 Current status:"
-            docker-compose ps
+          else
+            echo "⏭️  Frontend unchanged, skipping..."
+          fi
+          
+          # Cloudflare och Postgres körs alltid (om de inte redan körs)
+          echo "🔍 Ensuring postgres and cloudflared are running..."
+          docker-compose up -d postgres cloudflared
+          
+          # Cleanup old images
+          echo "🧹 Cleaning up old images..."
+          docker image prune -af --filter "until=48h"
+          
+          echo "✨ Deployment completed successfully!"
+          echo "📊 Current status:"
+          docker-compose ps
 
   # ==========================================
   # Notify Deployment Status
   # ==========================================
   notify:
     name: Notify Status
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [deploy]
     if: always()
     steps:
