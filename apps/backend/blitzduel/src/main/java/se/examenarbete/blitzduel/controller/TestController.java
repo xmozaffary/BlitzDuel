@@ -28,6 +28,6 @@ public class TestController {
 
     @GetMapping("/hello")
     public String getHello() {
-        return "Hello";
+        return "Hello world";
     }
 }
