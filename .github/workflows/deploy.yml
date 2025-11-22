@@ -154,6 +154,9 @@ jobs:
           
           cd ~/blitzduel
           
+          # Set IMAGE_TAG to latest explicitly
+          export IMAGE_TAG=latest
+          
           echo "📦 Starting deployment..."
           echo "Backend changed: $BACKEND_CHANGED"
           echo "Frontend changed: $FRONTEND_CHANGED"
