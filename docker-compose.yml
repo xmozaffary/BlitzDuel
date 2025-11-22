@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # ==========================================
   # PostgreSQL Database
@@ -55,7 +53,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s
+      start_period: 90s
     deploy:
       resources:
         limits:
@@ -85,7 +83,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 15s
     deploy:
       resources:
         limits:
@@ -114,7 +112,9 @@ services:
 networks:
   blitzduel-network:
     driver: bridge
+    name: blitzduel-network
 
 volumes:
   postgres-data:
     driver: local
+    name: blitzduel_postgres-data
