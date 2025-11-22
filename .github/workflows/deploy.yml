@@ -20,7 +20,7 @@ jobs:
   # ==========================================
   detect-changes:
     name: Detect Changes
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
