@@ -183,9 +183,9 @@ jobs:
           # Smart deployment - bara uppdatera vad som ändrats
           if [ "$BACKEND_CHANGED" = "true" ]; then
             echo "🐳 Pulling backend image..."
-            docker-compose pull backend
+            docker compose pull backend
             echo "🚀 Restarting backend..."
-            docker-compose up -d --no-deps backend
+            docker compose up -d --no-deps backend
             
             echo "⏳ Waiting for backend to be healthy..."
             sleep 30
@@ -203,9 +203,9 @@ jobs:
           
           if [ "$FRONTEND_CHANGED" = "true" ]; then
             echo "🐳 Pulling frontend image..."
-            docker-compose pull frontend
+            docker compose pull frontend
             echo "🚀 Restarting frontend..."
-            docker-compose up -d --no-deps frontend
+            docker compose up -d --no-deps frontend
             
             echo "⏳ Waiting for frontend to be healthy..."
             sleep 15
@@ -223,7 +223,7 @@ jobs:
           
           # Cloudflare och Postgres körs alltid (om de inte redan körs)
           echo "🔍 Ensuring postgres and cloudflared are running..."
-          docker-compose up -d postgres cloudflared
+          docker compose up -d postgres cloudflared
           
           # Cleanup old images
           echo "🧹 Cleaning up old images..."
@@ -231,7 +231,7 @@ jobs:
           
           echo "✨ Deployment completed successfully!"
           echo "📊 Current status:"
-          docker-compose ps
+          docker compose ps
 
   # ==========================================
   # Notify Deployment Status
