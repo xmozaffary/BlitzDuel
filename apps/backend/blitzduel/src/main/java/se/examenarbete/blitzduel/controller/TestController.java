@@ -34,7 +34,7 @@ public class TestController {
     @GetMapping("/ch")
     public String getChange() {
         System.out.println("hello");
-        return "Hello world from somewhere i helvate";
+        return "Hello world from somewhere i helvate satans fan";
 
     }
 }

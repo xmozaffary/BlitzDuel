@@ -19,6 +19,9 @@ export const Header = () => {
               <li>
                 <NavLink to={"/om"}>change 2 ändring</NavLink>
               </li>
+              <li>
+                <NavLink to={"/om"}>change fyfan asså ändring</NavLink>
+              </li>
             </ul>
           </nav>
         </header>
