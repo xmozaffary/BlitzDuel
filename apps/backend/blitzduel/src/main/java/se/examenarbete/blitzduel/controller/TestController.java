@@ -30,4 +30,9 @@ public class TestController {
     public String getHello() {
         return "Hello world";
     }
+
+    @GetMapping("/ch")
+    public String getChange() {
+        return "Hello world";
+    }
 }
