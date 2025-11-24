@@ -33,6 +33,8 @@ public class TestController {
 
     @GetMapping("/ch")
     public String getChange() {
-        return "Hello world from somewhere";
+        System.out.println("hello");
+        return "Hello world from somewhere i helvate";
+
     }
 }
