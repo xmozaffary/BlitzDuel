@@ -8,12 +8,14 @@ import se.examenarbete.blitzduel.model.Question;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 @Service
 public class GameService {
 
     private final Map<String, GameSession> gameSessions = new ConcurrentHashMap<>();
+    private final Map<String, ScheduledFuture<?>> timeoutTasks = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
 
     private final QuizService quizService;
 
@@ -25,6 +27,7 @@ public class GameService {
 
         GameSession session = new GameSession(lobbyCode, quizId, player1, player2);
         session.setCurrentQuestionIndex(0);
+        session.setQuestionStartTime(System.currentTimeMillis());
         gameSessions.put(lobbyCode, session);
         return session;
     }
@@ -74,6 +77,8 @@ public class GameService {
 
         session.setCurrentQuestionIndex(session.getCurrentQuestionIndex() + 1);
         session.resetAnswers();
+        // session.setQuestionStartTime(System.currentTimeMillis());
+
 
         GameUpdateResponse response =  new GameUpdateResponse();
         response.setStatus("BOTH_ANSWERED");
@@ -93,4 +98,25 @@ public class GameService {
 
         return response;
     }
+
+    public void scheduleTimeout(String lobbyCode, Runnable onTimeout){
+        ScheduledFuture<?> existingTask = timeoutTasks.get(lobbyCode);
+        if (existingTask != null && !existingTask.isDone()) {
+            existingTask.cancel(false);
+        }
+
+
+        ScheduledFuture<?> task = scheduler.schedule(onTimeout, 5, TimeUnit.SECONDS);
+        timeoutTasks.put(lobbyCode, task);
+    }
+
+
+
+            public void cancelTimeout(String lobbyCode) {
+                ScheduledFuture<?> task = timeoutTasks.get(lobbyCode);
+                if(task != null && !task.isDone()){
+                    task.cancel(false);
+                    timeoutTasks.remove(lobbyCode);
+                }
+            }
 }

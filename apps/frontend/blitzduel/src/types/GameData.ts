@@ -5,6 +5,8 @@ export interface QuestionData {
   options: string[];
   hostName: string;
   guestName: string;
+  timeLimit: number;
+  startTime: number;
 }
 
 export interface ResultData {

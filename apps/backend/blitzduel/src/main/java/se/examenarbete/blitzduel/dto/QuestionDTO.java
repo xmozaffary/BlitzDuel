@@ -10,9 +10,27 @@ public class QuestionDTO {
     private List<String> options;
     private String hostName;
     private String guestName;
+    private int timeLimit = 5;
+    private long startTime;
 
     public QuestionDTO() {
 
+    }
+
+    public int getTimeLimit() {
+        return timeLimit;
+    }
+
+    public void setTimeLimit(int timeLimit) {
+        this.timeLimit = timeLimit;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
     }
 
     public QuestionDTO(String type, Integer currentQuestionIndex, String questionText, List<String> options, String hostName, String guestName) {
@@ -22,6 +40,8 @@ public class QuestionDTO {
         this.options = options;
         this.hostName = hostName;
         this.guestName = guestName;
+        //this.timeLimit = timeLimit;
+        //this.startTime = startTime;
     }
 
     public String getType() {

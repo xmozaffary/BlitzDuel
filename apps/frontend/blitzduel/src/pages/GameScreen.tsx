@@ -8,6 +8,7 @@ import { ScoreBoard } from "../components/ScoreBoard.tsx";
 import { Spinner } from "../components/Spinner.tsx";
 import { QuestionDisplay } from "../components/QuestionDisplay.tsx";
 import { usePlayer } from "../contexts/PlayerContext.tsx";
+import { QuestionTimer } from "../components/QuestionTimer.tsx";
 
 const GameScreen = () => {
   const { lobbyCode } = useParams<{ lobbyCode: string }>();
@@ -34,6 +35,8 @@ const GameScreen = () => {
 
   const [showResult, setShowResult] = useState(false);
 
+  const [timeIsUp, setTimeIsUp] = useState(false);
+
   useEffect(() => {
     selectedAnswerRef.current = selectedAnswer;
   }, [selectedAnswer]);
@@ -56,6 +59,7 @@ const GameScreen = () => {
           setSelectedAnswer(null);
           setAnswerState(null);
           setShowResult(false);
+          setTimeIsUp(false)
 
           if (data.hostName) setHostName(data.hostName);
           if (data.guestName) setGuestName(data.guestName);
@@ -90,7 +94,7 @@ const GameScreen = () => {
   }, [lobbyCode]);
 
   const handleAnswer = (answerIndex: number) => {
-    if (!client || !lobbyCode || selectedAnswer !== null) return;
+    if (!client || !lobbyCode || selectedAnswer !== null || timeIsUp) return;
 
     setSelectedAnswer(answerIndex);
     setAnswerState("selected");
@@ -148,14 +152,30 @@ const GameScreen = () => {
         opponentName={opponentName}
         opponentScore={opponentScore}
       />
-      <QuestionDisplay
+      <div>
+              {currentQuestion.timeLimit && currentQuestion.startTime &&(
+        <QuestionTimer
+          timeLimit={currentQuestion.timeLimit}
+          startTime={currentQuestion.startTime}
+          onTimeUp={() => {
+            console.log("time is up...")
+            setTimeIsUp(true);
+          }}
+
+        />
+      )}
+
+            <QuestionDisplay
         questionText={currentQuestion.questionText}
         currentQuestionIndex={currentQuestion.currentQuestionIndex}
         options={currentQuestion.options}
         selectedAnswer={selectedAnswer}
         answerState={answerState}
         onAnswer={handleAnswer}
+        isDisabled={timeIsUp}
       />
+
+      </div>
     </div>
   );
 };

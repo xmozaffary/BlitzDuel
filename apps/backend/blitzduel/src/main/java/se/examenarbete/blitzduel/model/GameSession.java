@@ -14,6 +14,8 @@ public class GameSession {
     private Integer hostNameAnswer;
     private Integer guestNameAnswer;
 
+    private long questionStartTime;
+
     public GameSession(String lobbyCode, Long quizId, String hostName, String guestName) {
         this.lobbyCode = lobbyCode;
         this.quizId = quizId;
@@ -39,6 +41,14 @@ public class GameSession {
 
     public void setGuestNameAnswer(Integer guestNameAnswer) {
         this.guestNameAnswer = guestNameAnswer;
+    }
+
+    public long getQuestionStartTime() {
+        return questionStartTime;
+    }
+
+    public void setQuestionStartTime(long questionStartTime) {
+        this.questionStartTime = questionStartTime;
     }
 
     public String getLobbyCode() {

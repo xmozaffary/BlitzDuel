@@ -7,6 +7,7 @@ interface QuestionDisplayProps {
   selectedAnswer: number | null;
   answerState: "selected" | "correct" | "incorrect" | null;
   onAnswer: (index: number) => void;
+  isDisabled: boolean;
 }
 
 export const QuestionDisplay = ({
@@ -16,6 +17,7 @@ export const QuestionDisplay = ({
   selectedAnswer,
   answerState,
   onAnswer,
+  isDisabled,
 }: QuestionDisplayProps) => {
   return (
     <div className="question-content">
@@ -34,7 +36,7 @@ export const QuestionDisplay = ({
             option={option}
             index={index}
             onAnswer={onAnswer}
-            disabled={selectedAnswer !== null}
+            disabled={selectedAnswer !== null || isDisabled}
             isSelected={selectedAnswer === index}
             answerState={selectedAnswer === index ? answerState : null}
           />
