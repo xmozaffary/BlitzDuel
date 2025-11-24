@@ -28,7 +28,7 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 
 # Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/blitzduel.conf
 
 # Copy built application from build stage
 COPY --from=build /app/dist .
