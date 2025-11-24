@@ -33,6 +33,6 @@ public class TestController {
 
     @GetMapping("/ch")
     public String getChange() {
-        return "Hello world";
+        return "Hello world from somewhere";
     }
 }

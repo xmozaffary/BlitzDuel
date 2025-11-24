@@ -16,8 +16,11 @@ export const Header = () => {
               <li>
                 <NavLink to={"/om"}>Om</NavLink>
               </li>
-                            <li>
+              <li>
                 <NavLink to={"/om"}>change</NavLink>
+              </li>
+              <li>
+                <NavLink to={"/om"}>change 2</NavLink>
               </li>
             </ul>
           </nav>
