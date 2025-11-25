@@ -55,8 +55,6 @@ public class GameController {
         );
 
         dto.setTimeLimit(5);
-        dto.setStartTime(session.getQuestionStartTime());
-
 
         simpMessagingTemplate.convertAndSend(
                 "/topic/lobby/" + lobbyCode + "/start",
@@ -68,6 +66,11 @@ public class GameController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        // Sätt startTime PRECIS innan send
+        long startTime = System.currentTimeMillis();
+        session.setQuestionStartTime(startTime);
+        dto.setStartTime(startTime);
 
         simpMessagingTemplate.convertAndSend(
                 "/topic/game/" + lobbyCode,
@@ -117,8 +120,6 @@ public class GameController {
                     Question nextQuestion = gameService.getCurrentQuestion(lobbyCode);
                     GameSession session = gameService.getGameSession(lobbyCode).get();
 
-                    session.setQuestionStartTime(System.currentTimeMillis());
-
                     QuestionDTO nextDto = new QuestionDTO(
                             "QUESTION",
                             session.getCurrentQuestionIndex(),
@@ -129,7 +130,11 @@ public class GameController {
                     );
 
                     nextDto.setTimeLimit(5);
-                    nextDto.setStartTime(session.getQuestionStartTime());
+
+                    // Sätt startTime PRECIS innan send
+                    long startTime = System.currentTimeMillis();
+                    session.setQuestionStartTime(startTime);
+                    nextDto.setStartTime(startTime);
 
                     simpMessagingTemplate.convertAndSend(
                             "/topic/game/" + lobbyCode,
@@ -204,15 +209,12 @@ public class GameController {
     }
 
 
-    //
     private void sendNextQuestion(String lobbyCode) {
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
 
                 GameSession session = gameService.getGameSession(lobbyCode).get();
-                session.setQuestionStartTime(System.currentTimeMillis());
-
                 Question nextQuestion = gameService.getCurrentQuestion(lobbyCode);
 
                 QuestionDTO nextDto = new QuestionDTO(
@@ -225,7 +227,11 @@ public class GameController {
                 );
 
                 nextDto.setTimeLimit(5);
-                nextDto.setStartTime(session.getQuestionStartTime());
+
+                // Sätt startTime PRECIS innan send
+                long startTime = System.currentTimeMillis();
+                session.setQuestionStartTime(startTime);
+                nextDto.setStartTime(startTime);
 
                 simpMessagingTemplate.convertAndSend(
                         "/topic/game/" + lobbyCode,
