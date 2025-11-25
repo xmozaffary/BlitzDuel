@@ -19,3 +19,10 @@ export interface ResultData {
   hostName: string;
   guestName: string;
 }
+
+
+export interface TimerUpdateMessage {
+  type: "TIMER_UPDATE";
+  remainingTime: number;
+  currentQuestionIndex: number;
+}

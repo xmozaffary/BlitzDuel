@@ -37,6 +37,8 @@ const GameScreen = () => {
 
   const [timeIsUp, setTimeIsUp] = useState(false);
 
+  const [remainingTime, setRemainingTime] = useState(5)
+
   useEffect(() => {
     selectedAnswerRef.current = selectedAnswer;
   }, [selectedAnswer]);
@@ -60,9 +62,16 @@ const GameScreen = () => {
           setAnswerState(null);
           setShowResult(false);
           setTimeIsUp(false)
+          setRemainingTime(5);
 
           if (data.hostName) setHostName(data.hostName);
           if (data.guestName) setGuestName(data.guestName);
+        }else if(data.type === "TIMER_UPDATE"){
+          setRemainingTime(data.remainingTime);
+
+          if(data.remainingTime <= 0){
+            setTimeIsUp(true)
+          }
         } else if (data.status === "BOTH_ANSWERED") {
           setResult(data as ResultData);
           setHostScore(data.hostScore);
@@ -155,8 +164,7 @@ const GameScreen = () => {
       <div>
               {currentQuestion.timeLimit && currentQuestion.startTime &&(
         <QuestionTimer
-          timeLimit={currentQuestion.timeLimit}
-          startTime={currentQuestion.startTime}
+        remainingTime={remainingTime}
           onTimeUp={() => {
             console.log("time is up...")
             setTimeIsUp(true);

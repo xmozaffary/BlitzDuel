@@ -14,13 +14,15 @@ import java.util.concurrent.*;
 public class GameService {
 
     private final Map<String, GameSession> gameSessions = new ConcurrentHashMap<>();
-    private final Map<String, ScheduledFuture<?>> timeoutTasks = new ConcurrentHashMap<>();
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
 
     private final QuizService quizService;
+    private final TimerService timerService;
+    private final AnswerService answerService;
 
-    public GameService(QuizService quizService) {
+    public GameService(QuizService quizService, TimerService timerService, AnswerService answerService) {
         this.quizService = quizService;
+        this.timerService = timerService;
+        this.answerService = answerService;
     }
 
     public GameSession startGame(String lobbyCode, Long quizId, String player1, String player2) {
@@ -45,78 +47,38 @@ public class GameService {
         return questions.get(session.getCurrentQuestionIndex());
     }
 
-    public GameUpdateResponse submitAnswer(String lobbyCode, String playerNickname, Integer answerIndex) {
+    public GameUpdateResponse submitAnswer(String lobbyCode, String name, Integer answerIndex) {
         GameSession session = getGameSession(lobbyCode)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
 
-        if(playerNickname.equals(session.getHostName())){
-            session.setHostNameAnswer(answerIndex);
-        } else if(playerNickname.equals(session.getGuestName())) {
-            session.setGuestNameAnswer(answerIndex);
-        }
-
-        if (!session.bothAnswered()){
-            GameUpdateResponse response = new GameUpdateResponse();
-            response.setStatus("WAITING");
-            return response;
-        }
-
-        Question currentQuestion = getCurrentQuestion(lobbyCode);
-        int correctAnswer = currentQuestion.getCorrectAnswerIndex();
-
-        boolean player1Correct = session.getHostNameAnswer() == correctAnswer;
-        boolean player2Correct = session.getGuestNameAnswer() == correctAnswer;
-
-        if (session.getHostNameAnswer() == correctAnswer){
-            session.setHostNameScore(session.getHostNameScore() + 1);
-        }
-
-        if (session.getGuestNameAnswer() == correctAnswer){
-            session.setGuestNameScore(session.getGuestNameScore() + 1);
-        }
-
-        session.setCurrentQuestionIndex(session.getCurrentQuestionIndex() + 1);
-        session.resetAnswers();
-        // session.setQuestionStartTime(System.currentTimeMillis());
-
-
-        GameUpdateResponse response =  new GameUpdateResponse();
-        response.setStatus("BOTH_ANSWERED");
-        response.setCorrectAnswerIndex(correctAnswer);
-        response.setHostCorrect(player1Correct);
-        response.setGuestCorrect(player2Correct);
-        response.setHostScore(session.getHostNameScore());
-        response.setGuestScore(session.getGuestNameScore());
-        response.setHostName(session.getHostName());
-        response.setGuestName(session.getGuestName());
-
-        if (session.isGameOver()){
-            response.setStatus("GAME_OVER");
-        } else {
-            response.setStatus("BOTH_ANSWERED");
-        }
-
-        return response;
+        return answerService.submitAnswer(lobbyCode, session, name, answerIndex);
     }
-
-    public void scheduleTimeout(String lobbyCode, Runnable onTimeout){
-        ScheduledFuture<?> existingTask = timeoutTasks.get(lobbyCode);
-        if (existingTask != null && !existingTask.isDone()) {
-            existingTask.cancel(false);
-        }
-
-
-        ScheduledFuture<?> task = scheduler.schedule(onTimeout, 5, TimeUnit.SECONDS);
-        timeoutTasks.put(lobbyCode, task);
+    
+    public void scheduleTimeout(String lobbyCode, Runnable onTimeout) {
+        timerService.scheduleTimeout(lobbyCode, onTimeout);
+    }
+    public void cancelTimeout(String lobbyCode) {
+        timerService.cancelTimeout(lobbyCode);
     }
 
 
+    public void startTimerBroadcast(String lobbyCode, int timeLimit){
+        GameSession session = getGameSession(lobbyCode).orElse(null);
+        if (session != null){
+            timerService.startTimerBroadcast(lobbyCode, session, timeLimit);
+        }
+    }
 
-            public void cancelTimeout(String lobbyCode) {
-                ScheduledFuture<?> task = timeoutTasks.get(lobbyCode);
-                if(task != null && !task.isDone()){
-                    task.cancel(false);
-                    timeoutTasks.remove(lobbyCode);
-                }
-            }
+    public void cancelTimerBroadcast(String lobbyCode) {
+        timerService.cancelTimerBroadcast(lobbyCode);
+    }
+
+    public GameUpdateResponse handleTimeout(String lobbyCode) {
+        GameSession session = getGameSession(lobbyCode)
+                .orElseThrow(() -> new RuntimeException("Game not found"));
+
+        return answerService.handleTimeout(lobbyCode, session);
+    }
 }
+
+

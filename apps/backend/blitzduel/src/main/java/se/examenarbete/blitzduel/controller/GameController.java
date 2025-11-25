@@ -1,6 +1,5 @@
 package se.examenarbete.blitzduel.controller;
 
-
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -14,7 +13,6 @@ import se.examenarbete.blitzduel.model.Question;
 import se.examenarbete.blitzduel.service.GameService;
 import se.examenarbete.blitzduel.service.LobbyService;
 
-
 @Controller
 public class GameController {
 
@@ -27,7 +25,6 @@ public class GameController {
         this.lobbyService = lobbyService;
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
-
 
     @MessageMapping("/game/{lobbyCode}/start")
     public void startGame(@DestinationVariable String lobbyCode) {
@@ -77,15 +74,16 @@ public class GameController {
                 dto
         );
 
+        // ← NYTT: Starta timer broadcast
+        gameService.startTimerBroadcast(lobbyCode, 5);
+
         gameService.scheduleTimeout(lobbyCode, () -> handleTimeout(lobbyCode));
     }
-
 
     @MessageMapping("/game/{lobbyCode}/answer")
     public void submitAnswer(@DestinationVariable String lobbyCode, SubmitAnswerRequest request) {
         System.out.println("Answer form: " + request.getName() +
                 ": " + request.getAnswerIndex());
-
 
         GameUpdateResponse response = gameService.submitAnswer(
                 lobbyCode,
@@ -97,106 +95,43 @@ public class GameController {
             System.out.println("Waiting for other player...");
             return;
         }
+
+        // ← ÄNDRAT: Stoppa både timeout OCH timer broadcast
         gameService.cancelTimeout(lobbyCode);
+        gameService.cancelTimerBroadcast(lobbyCode);
+
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
 
         simpMessagingTemplate.convertAndSend(
                 "/topic/game/" + lobbyCode,
                 response
         );
 
-        System.out.println("Sent reponse with status: " + response.getStatus());
+        System.out.println("Sent response with status: " + response.getStatus());
+
         if (response.getStatus().equals("BOTH_ANSWERED")) {
-
-            new Thread(() -> {
-
-                try {
-                    Thread.sleep(1000);
-                    Question nextQuestion = gameService.getCurrentQuestion(lobbyCode);
-                    GameSession session = gameService.getGameSession(lobbyCode).get();
-
-                    QuestionDTO nextDto = new QuestionDTO(
-                            "QUESTION",
-                            session.getCurrentQuestionIndex(),
-                            nextQuestion.getQuestionText(),
-                            nextQuestion.getOptions(),
-                            session.getHostName(),
-                            session.getGuestName()
-                    );
-
-                    nextDto.setTimeLimit(5);
-
-                    // Sätt startTime PRECIS innan send
-                    long startTime = System.currentTimeMillis();
-                    session.setQuestionStartTime(startTime);
-                    nextDto.setStartTime(startTime);
-
-                    simpMessagingTemplate.convertAndSend(
-                            "/topic/game/" + lobbyCode,
-                            nextDto
-                    );
-
-                    System.out.println("Sent next question after delay");
-                    gameService.scheduleTimeout(lobbyCode, () -> handleTimeout(lobbyCode));
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }).start();
+            sendNextQuestion(lobbyCode);
         }
     }
 
     private void handleTimeout(String lobbyCode) {
         System.out.println("Timeout for lobby: " + lobbyCode);
 
-        GameSession session = gameService.getGameSession(lobbyCode).orElse(null);
-        if (session == null) return;
+        // ← NYTT: Stoppa timer broadcast vid timeout
+        gameService.cancelTimerBroadcast(lobbyCode);
 
-        Question currentQuestion = gameService.getCurrentQuestion(lobbyCode);
-        int correctAnswer = currentQuestion.getCorrectAnswerIndex();
-
-        boolean hostCorrect = session.getHostNameAnswer() != null &&
-                session.getHostNameAnswer() == correctAnswer;
-
-        boolean guestCorrect = session.getGuestNameAnswer() != null &&
-                session.getGuestNameAnswer() == correctAnswer;
-
-        if (hostCorrect) {
-            session.setHostNameScore(session.getHostNameScore() + 1);
-        }
-        if (guestCorrect) {
-            session.setGuestNameScore(session.getGuestNameScore() + 1);
-        }
-
-        session.setCurrentQuestionIndex(session.getCurrentQuestionIndex() + 1);
-        session.resetAnswers();
-
-        GameUpdateResponse response = new GameUpdateResponse();
-        response.setCorrectAnswerIndex(correctAnswer);
-        response.setHostCorrect(hostCorrect);
-        response.setGuestCorrect(guestCorrect);
-        response.setHostScore(session.getHostNameScore());
-        response.setGuestScore(session.getGuestNameScore());
-        response.setHostName(session.getHostName());
-        response.setGuestName(session.getGuestName());
-
-        if (session.isGameOver()) {
-            response.setStatus("GAME_OVER");
-        } else {
-            response.setStatus("BOTH_ANSWERED");
-        }
+        // ← ÄNDRAT: Använd GameService.handleTimeout istället för duplikerad logik
+        GameUpdateResponse response = gameService.handleTimeout(lobbyCode);
 
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
 
         simpMessagingTemplate.convertAndSend(
                 "/topic/game/" + lobbyCode,
@@ -207,7 +142,6 @@ public class GameController {
             sendNextQuestion(lobbyCode);
         }
     }
-
 
     private void sendNextQuestion(String lobbyCode) {
         new Thread(() -> {
@@ -239,6 +173,9 @@ public class GameController {
                 );
 
                 System.out.println("Sent next question after delay");
+
+                // ← NYTT: Starta timer broadcast för nästa fråga
+                gameService.startTimerBroadcast(lobbyCode, 5);
 
                 gameService.scheduleTimeout(lobbyCode, () -> handleTimeout(lobbyCode));
             } catch (InterruptedException e) {
