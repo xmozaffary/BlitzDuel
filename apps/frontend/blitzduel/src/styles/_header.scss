@@ -18,8 +18,27 @@
         list-style: none;
         display: flex;
         gap: 1rem;
-        justify-content: center;
+        align-items: center;
         flex-wrap: wrap;
+
+        .logo-item {
+          margin-right: auto;
+
+          .logo-link {
+            display: block;
+            line-height: 0;
+
+            .blitzduel-logo {
+              height: 48px;
+              width: auto;
+              transition: transform 0.2s ease;
+
+              &:hover {
+                transform: scale(1.05);
+              }
+            }
+          }
+        }
 
         li {
           a {
@@ -49,7 +68,10 @@
 
       .navigation ul {
         gap: 2rem;
-        justify-content: flex-start;
+
+        .logo-item .logo-link .blitzduel-logo {
+          height: 60px;
+        }
 
         li a {
           font-size: 1.1rem;
@@ -59,3 +81,66 @@
     }
   }
 }
+
+
+// .headerContainer {
+//   width: 100%;
+//   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+//   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+//   position: sticky;
+//   top: 0;
+//   z-index: 1000;
+
+//   .header {
+//     max-width: 1280px;
+//     margin: 0 auto;
+//     padding: 1rem;
+
+//     .navigation {
+//       ul {
+//         margin: 0;
+//         padding: 0;
+//         list-style: none;
+//         display: flex;
+//         gap: 1rem;
+//         justify-content: center;
+//         flex-wrap: wrap;
+
+//         li {
+//           a {
+//             display: block;
+//             text-decoration: none;
+//             color: white;
+//             font-weight: 600;
+//             font-size: 0.95rem;
+//             padding: 0.8rem 1.2rem;
+//             border-radius: 8px;
+//             transition: all 0.3s ease;
+//             white-space: nowrap;
+
+//             &:hover,
+//             &.active {
+//               background: rgba(255, 255, 255, 0.2);
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+
+//   @media (min-width: 768px) {
+//     .header {
+//       padding: 1rem 2rem;
+
+//       .navigation ul {
+//         gap: 2rem;
+//         justify-content: flex-start;
+
+//         li a {
+//           font-size: 1.1rem;
+//           padding: 0.8rem 1.5rem;
+//         }
+//       }
+//     }
+//   }
+// }

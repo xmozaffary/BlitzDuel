@@ -12,6 +12,7 @@ interface Quiz {
   category: string;
   totalQuestions: number;
   createdAt: string;
+  imgUrl: string;
 }
 
 const Quizzes = () => {
@@ -51,6 +52,7 @@ const Quizzes = () => {
               title={quiz.title}
               description={quiz.description}
               totalQuestions={quiz.totalQuestions}
+              imgUrl={quiz.imgUrl}
               onClick={() => selectQuiz(quiz.id)}
             />
           );

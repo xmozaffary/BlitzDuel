@@ -31,10 +31,4 @@ public class TestController {
         return "Hello world";
     }
 
-    @GetMapping("/ch")
-    public String getChange() {
-        System.out.println("hello");
-        return "Hello world from somewhere i helvate satans fan kom igen nu BRITT-MARIE kör för faaAn!";
-
-    }
 }
