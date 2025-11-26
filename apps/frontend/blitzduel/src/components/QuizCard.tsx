@@ -1,15 +1,11 @@
 interface QuizCardProps {
   title: string;
-  description: string;
-  totalQuestions: number;
   imgUrl: string;
   onClick: () => void;
 }
 
 export const QuizCard = ({
   title,
-  description,
-  totalQuestions,
   imgUrl,
   onClick,
 }: QuizCardProps) => {

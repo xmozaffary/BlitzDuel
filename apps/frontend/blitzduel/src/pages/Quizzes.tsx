@@ -50,8 +50,6 @@ const Quizzes = () => {
             <QuizCard
               key={quiz.id}
               title={quiz.title}
-              description={quiz.description}
-              totalQuestions={quiz.totalQuestions}
               imgUrl={quiz.imgUrl}
               onClick={() => selectQuiz(quiz.id)}
             />
