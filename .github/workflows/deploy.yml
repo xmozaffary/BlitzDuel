@@ -182,13 +182,16 @@ jobs:
           BACKEND_URL=${{ secrets.BACKEND_URL }}
           BACKEND_WS_URL=${{ secrets.BACKEND_WS_URL }}
           IMAGE_TAG=latest
+          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
           ENVEOF
           
           echo "✅ Updated .env file"
           
           # Smart deployment - bara uppdatera vad som ändrats
           if [ "$BACKEND_CHANGED" = "true" ]; then
-            echo "🔍 Ensuring postgres is healthy first..."
+            echo "🗄 Ensuring postgres is healthy first..."
             docker compose up -d postgres
             
             for i in {1..6}; do
@@ -259,7 +262,7 @@ jobs:
           fi
           
           # Cloudflare och Postgres körs alltid (om de inte redan körs)
-          echo "🔍 Ensuring postgres and cloudflared are running..."
+          echo "🔄 Ensuring postgres and cloudflared are running..."
           docker compose up -d postgres cloudflared
           
           # Cleanup old images
