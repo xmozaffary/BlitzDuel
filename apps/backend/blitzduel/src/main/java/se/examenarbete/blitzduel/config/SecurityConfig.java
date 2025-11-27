@@ -27,26 +27,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-        .csrf(csrf -> csrf.disable())
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/",
-                                "/api/auth/**",
-                                "/oauth2/**",
-                                "/login/**",
-                                "/api/quizzes",
-                                "/api/quizzes/**",
-                                "/ws/**"
-                        ).permitAll()
-                        .requestMatchers("/api/user/**").authenticated()
-                        .anyRequest().permitAll()
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(oAuth2LoginSuccessHandler)
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .csrf(csrf -> csrf.disable())
+                        .sessionManagement(session ->
+                                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .authorizeHttpRequests(auth -> auth
+                                .requestMatchers(
+                                        "/",
+                                        "/api/auth/**",
+                                        "/oauth2/**",
+                                        "/login/**",
+                                        "/api/quizzes",
+                                        "/api/quizzes/**",
+                                        "/ws/**",
+                                        "/actuator/health"
+                                ).permitAll()
+                                .requestMatchers("/api/user/**").authenticated()
+                                .anyRequest().permitAll()
+                        )
+                        .oauth2Login(oauth2 -> oauth2
+                                .successHandler(oAuth2LoginSuccessHandler)
+                                .failureUrl("/login?error=true")
+                        )
+                        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

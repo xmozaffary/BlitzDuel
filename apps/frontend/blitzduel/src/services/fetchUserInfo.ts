@@ -1,18 +1,28 @@
-export const fetchUserInfo = async () => {
-    const token = localStorage.getItem('jwt');
+import { API_URL } from "../config/environment";
 
-    const response = await fetch('http://localhost:8080/api/auth/me' , {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    });
-
-    if (response.ok) {
-        const user = await response.json();
-        return user;
-    }
-
-    throw new Error("Faild to fetch user")
+export interface UserInfo {
+  id: number;
+  email: string;
+  name: string;
+  profilePictureUrl: string;
+  gamesPlayed: number;
+  gamesWon: number;
+  totalScore: number;
 }
 
+export const fetchUserInfo = async (): Promise<UserInfo> => {
+  const token = localStorage.getItem("jwt");
+
+  if (!token) {
+    throw new Error("No JWT token found");
+  }
+
+  const response = await fetch(`${API_URL}/api/auth/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  return await response.json();
+};
