@@ -53,7 +53,7 @@ public class TestController {
                         "category", q.getCategory()
                 ))
                 .collect(Collectors.toList()));
-        
+        System.out.println("hello");
         return ResponseEntity.ok(response);
     }
 }

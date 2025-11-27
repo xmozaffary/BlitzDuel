@@ -15,7 +15,6 @@ export const useAuth = () => {
     localStorage.removeItem("jwt");
     setToken(null);
     setIsAuthenticated(false);
-    console.log("hello");
   };
 
   return { isAuthenticated, token, logout };
