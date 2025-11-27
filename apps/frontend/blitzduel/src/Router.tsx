@@ -6,6 +6,11 @@ import QuizDetails from "./pages/QuizDetails";
 import CreateLobby from "./components/CreateLobby";
 import JoinLobby from "./components/JoinLobby";
 import GameScreen from "./pages/GameScreen.tsx";
+import AuthCallback from "./components/AuthCallback.tsx";
+import { ProtctedRouter } from "./components/ProtectedRouterProps.tsx";
+import { LoginPage } from "./pages/LoginPage.tsx";
+
+
 
 export const router = createBrowserRouter([
   {
@@ -17,20 +22,34 @@ export const router = createBrowserRouter([
         element: <Quizzes />,
       },
       {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
         path: "/quiz/:quizId",
         element: <QuizDetails />,
       },
       {
         path: "/lobby/create",
-        element: <CreateLobby />,
+        element: <ProtctedRouter>
+          <CreateLobby />
+        </ProtctedRouter>,
       },
       {
         path: "/lobby/join",
-        element: <JoinLobby />,
+        element: <ProtctedRouter>
+          <JoinLobby />
+        </ProtctedRouter>,
       },
         {
           path: "/game/:lobbyCode",
-          element: <GameScreen/>
+          element: <ProtctedRouter>
+          <GameScreen />
+        </ProtctedRouter>,
+        },
+          {
+          path: "/auth/callback",
+          element: <AuthCallback/>
         },
     ],
     errorElement: <NotFound />,

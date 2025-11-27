@@ -16,6 +16,10 @@ export const Header = () => {
               </Link>
             </li>
 
+
+            <li>
+              <NavLink to={"/login"}>loging</NavLink>
+            </li>
             <li>
               <NavLink to={"/lobby/join"}>Join lobby</NavLink>
             </li>
@@ -26,29 +30,3 @@ export const Header = () => {
   );
 };
 
-
-
-
-
-// import { NavLink } from "react-router-dom";
-
-// export const Header = () => {
-//   return (
-//     <>
-//       <section className="headerContainer">
-//         <header className="header">
-//           <nav className="navigation">
-//             <ul>
-//               <li>
-//                 <NavLink to={"/"}>Hem</NavLink>
-//               </li>
-//               <li>
-//                 <NavLink to={"/lobby/join"}>Join lobby</NavLink>
-//               </li>
-//             </ul>
-//           </nav>
-//         </header>
-//       </section>
-//     </>
-//   );
-// };

@@ -21,6 +21,7 @@ public class TestController {
 
     @Autowired
     private TestRepository testRepository;
+    @Autowired
     private QuizRepository quizRepository;
 
     @PostMapping
