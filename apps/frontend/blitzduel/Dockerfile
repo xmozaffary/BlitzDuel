@@ -14,7 +14,15 @@ RUN npm ci --only=production
 # Copy source
 COPY . .
 
-# Build application
+# Accept build arguments
+ARG VITE_API_URL
+ARG VITE_WS_URL
+
+# Set as environment variables for build
+ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_WS_URL=${VITE_WS_URL}
+
+# Build application (now with correct env vars)
 RUN npm run build
 
 # ==========================================
