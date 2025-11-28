@@ -114,6 +114,8 @@ jobs:
           npm ci
       
       - name: Build application
+        env:
+          NODE_ENV: production
         run: |
           cd apps/frontend/blitzduel
           npm run build
