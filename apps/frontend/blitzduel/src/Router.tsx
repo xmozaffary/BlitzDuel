@@ -7,50 +7,71 @@ import CreateLobby from "./components/CreateLobby";
 import JoinLobby from "./components/JoinLobby";
 import GameScreen from "./pages/GameScreen.tsx";
 import AuthCallback from "./components/AuthCallback.tsx";
-import { ProtctedRouter } from "./components/ProtectedRouterProps.tsx";
 import { LoginPage } from "./pages/LoginPage.tsx";
-
-
+import { RequiredAuth } from "./components/RequireAuth.tsx";
+import { ProfilePage } from "./pages/ProfilePage.tsx";
 
 export const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/auth/callback",
+    element: <AuthCallback />,
+  },
   {
     path: "/",
     element: <Layout />,
     children: [
       {
         path: "/",
-        element: <Quizzes />,
-      },
-      {
-        path: "/login",
-        element: <LoginPage />,
+        element: (
+          <RequiredAuth>
+            <Quizzes />
+          </RequiredAuth>
+        ),
       },
       {
         path: "/quiz/:quizId",
-        element: <QuizDetails />,
+        element: (
+          <RequiredAuth>
+            <QuizDetails />
+          </RequiredAuth>
+        ),
       },
       {
         path: "/lobby/create",
-        element: <ProtctedRouter>
-          <CreateLobby />
-        </ProtctedRouter>,
+        element: (
+          <RequiredAuth>
+            <CreateLobby />
+          </RequiredAuth>
+        ),
       },
       {
         path: "/lobby/join",
-        element: <ProtctedRouter>
-          <JoinLobby />
-        </ProtctedRouter>,
+        element: (
+          <RequiredAuth>
+            <JoinLobby />
+          </RequiredAuth>
+        ),
       },
-        {
-          path: "/game/:lobbyCode",
-          element: <ProtctedRouter>
-          <GameScreen />
-        </ProtctedRouter>,
-        },
-          {
-          path: "/auth/callback",
-          element: <AuthCallback/>
-        },
+      {
+        path: "/game/:lobbyCode",
+        element: (
+          <RequiredAuth>
+            <GameScreen />
+          </RequiredAuth>
+        ),
+      },
+      {
+        path: "/profile",
+        element: (
+          <RequiredAuth>
+            <ProfilePage />
+          </RequiredAuth>
+        ),
+      },
     ],
     errorElement: <NotFound />,
   },

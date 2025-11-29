@@ -1,6 +1,9 @@
-import { NavLink, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export const Header = () => {
+  const { user, isAuthenticated } = useAuth();
+
   return (
     <section className="headerContainer">
       <header className="header">
@@ -8,25 +11,25 @@ export const Header = () => {
           <ul>
             <li className="logo-item">
               <Link to="/" className="logo-link">
-                <img 
-                  src="/assets/blitzduel-logo.jpg" 
-                  alt="BlitzDuel Logo" 
-                  className="blitzduel-logo"
-                />
+                <span className="logo-text">BlitzDuel</span>
               </Link>
             </li>
 
-
-            <li>
-              <NavLink to={"/login"}>loging</NavLink>
-            </li>
-            <li>
-              <NavLink to={"/lobby/join"}>Join lobby</NavLink>
-            </li>
+            {isAuthenticated && user && (
+              <li className="profile-item">
+                <Link to="/profile" className="profile-link">
+                  <img
+                    src={user.profilePictureUrl}
+                    alt={user.name}
+                    className="profile-avatar"
+                  />
+                  <span className="profile-name">{user.name}</span>
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
       </header>
     </section>
   );
 };
-

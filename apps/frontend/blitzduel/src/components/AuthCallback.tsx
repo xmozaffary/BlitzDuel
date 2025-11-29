@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchUserInfo } from "../services/fetchUserInfo";
+import { useAuth } from "../contexts/AuthContext";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -16,9 +17,7 @@ const AuthCallback = () => {
           throw new Error("Ingen token mottagen");
         }
 
-        localStorage.setItem("jwt", token);
-        await fetchUserInfo();
-
+        await login(token);
         navigate("/");
       } catch (err) {
         console.log("Auth callback error:", err);
@@ -26,14 +25,12 @@ const AuthCallback = () => {
           err instanceof Error ? err.message : "Inloggning misslyckades"
         );
 
-        localStorage.removeItem("jwt");
-
         setTimeout(() => navigate("/login"), 2000);
       }
     };
 
     handleCallback();
-  }, [navigate]);
+  }, [navigate, login]);
 
   if (error) {
     return (
