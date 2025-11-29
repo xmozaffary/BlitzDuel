@@ -4,12 +4,12 @@ export interface LobbyResponse {
   quizId: number;
   hostName: string;
   guestName: string | null;
-
 }
 
 export interface LobbyUpdate {
   players?: string[];
   status: string;
+  guestName?: string;
   [key: string]: unknown;
 }
 
@@ -19,5 +19,5 @@ export interface LobbyRequest {
 }
 
 export interface JoinLobbyRequest {
-    name: string;
+  name: string;
 }

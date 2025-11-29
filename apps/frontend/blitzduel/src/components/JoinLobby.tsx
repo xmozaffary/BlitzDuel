@@ -1,97 +1,74 @@
-import { useState } from "react";
-import { useWebSocket } from "../hooks/useWebSocket";
-import type { IMessage } from "@stomp/stompjs";
-import type { JoinLobbyRequest, LobbyUpdate } from "../types/lobby";
-import { Button } from "./Button";
-import { useNavigate } from "react-router-dom";
-import { usePlayer } from "../contexts/PlayerContext";
+import { useAuth } from "../contexts/AuthContext";
+import { useJoinLobby } from "../hooks/useJoinLobby";
 
 const JoinLobby = () => {
-  const [name, setName] = useState<string>("");
-  const { setPlayerName, setPlayerRole } = usePlayer();
-  const [joinCode, setJoinCode] = useState<string>("");
-  const [joined, setJoined] = useState<boolean>(false);
-  const { logs, addLog, createClient } = useWebSocket();
-  const navigate = useNavigate();
-
-  const handleJoinLobby = (): void => {
-    if (!name || !joinCode) {
-      alert("Enter nickname and lobby code!");
-      return;
-    }
-
-    setPlayerName(name);
-    setPlayerRole("guest");
-
-    const client = createClient((client) => {
-      addLog(`✅ Connected to WebSocket`);
-
-      client.subscribe("/user/queue/lobby", (message: IMessage) => {
-        const data: LobbyUpdate = JSON.parse(message.body);
-        if (data.status === "FULL") {
-          addLog("❌ Lobby is full!");
-          client.deactivate();
-          return;
-        }
-      });
-
-      client.subscribe(`/topic/lobby/${joinCode}`, (message: IMessage) => {
-        const data: LobbyUpdate = JSON.parse(message.body);
-        addLog(`📨 Lobby update: ${JSON.stringify(data)}`);
-        setJoined(true);
-      });
-
-      client.subscribe(`/topic/lobby/${joinCode}/start`, () => {
-        addLog("🎮 Game starting! Navigating...");
-        navigate(`/game/${joinCode}`);
-      });
-
-      setTimeout(() => {
-        const payLoad: JoinLobbyRequest = { name };
-        client.publish({
-          destination: `/app/lobby/${joinCode}/join`,
-          body: JSON.stringify(payLoad),
-        });
-
-        addLog(`📤 Sent join request to ${joinCode}`);
-      }, 200);
-    });
-    client.activate();
-  };
+  const { user } = useAuth();
+  const {
+    lobbyCode,
+    isJoining,
+    joined,
+    error,
+    joinLobby,
+    cancelJoin,
+    updateLobbyCode,
+  } = useJoinLobby();
 
   return (
-    <div className="join-lobby">
-      <h2>Join lobby</h2>
+    <div className="lobby-container">
+      <div className="lobby-card">
+        <h1>Gå med i Lobby</h1>
 
-      <input
-        type="text"
-        placeholder="Ditt nickname"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+        {!joined ? (
+          <div className="join-lobby-form">
+            <div className="user-info">
+              <img
+                src={user?.profilePictureUrl}
+                alt={user?.name}
+                className="user-avatar"
+              />
+              <div>
+                <p className="user-name">{user?.name}</p>
+                <p className="user-role">Gäst</p>
+              </div>
+            </div>
 
-      <input
-        type="text"
-        placeholder="Lobby kod"
-        value={joinCode}
-        onChange={(e) => setJoinCode(e.target.value)}
-      />
+            <div className="input-group">
+              <label htmlFor="lobbyCode">Lobby Kod</label>
+              <input
+                id="lobbyCode"
+                type="text"
+                placeholder="Ange lobby-kod"
+                value={lobbyCode}
+                onChange={(e) => updateLobbyCode(e.target.value)}
+                disabled={isJoining}
+                className="lobby-code-input"
+                maxLength={6}
+              />
+              {error && <p className="error-message">{error}</p>}
+            </div>
 
-      <Button
-        text="Joina lobby"
-        onClick={handleJoinLobby}
-        variant="secondary"
-      />
+            <button
+              onClick={joinLobby}
+              disabled={isJoining || !lobbyCode.trim()}
+              className="btn-join"
+            >
+              {isJoining ? "Ansluter..." : "Gå med"}
+            </button>
 
-      {joined && (
-        <div className="success-massage">✅ Du har joinat lobbyn!</div>
-      )}
-
-      <div className="logs">
-        <h3>Logs:</h3>
-        {logs.map((log, idx) => (
-          <div key={idx}>{log}</div>
-        ))}
+            <button onClick={cancelJoin} className="btn-cancel">
+              Avbryt
+            </button>
+          </div>
+        ) : (
+          <div className="join-success">
+            <div className="success-icon">✅</div>
+            <h2>Du har gått med i lobbyn!</h2>
+            <p>Väntar på att hosten startar matchen...</p>
+            <div className="spinner-container">
+              <div className="spinner"></div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
