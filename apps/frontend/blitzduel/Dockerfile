@@ -15,7 +15,7 @@ RUN npm ci --only=production
 COPY . .
 
 # Accept build arguments
-ARG VITE_API_URL
+ARG VITE_API_BASE_URL
 ARG VITE_WS_URL
 
 # Set as environment variables for build
