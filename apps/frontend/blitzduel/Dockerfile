@@ -19,7 +19,7 @@ ARG VITE_API_BASE_URL
 ARG VITE_WS_URL
 
 # Set as environment variables for build
-ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 ENV VITE_WS_URL=${VITE_WS_URL}
 
 # Build application (now with correct env vars)
