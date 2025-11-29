@@ -1,7 +1,7 @@
 import { Client } from "@stomp/stompjs";
 import { useState } from "react";
 import SockJS from "sockjs-client";
-import { WS_URL } from "../config/api";
+import { config } from "../config/config";
 
 export const useWebSocket = () => {
   const [logs, setLogs] = useState<string[]>([]);
@@ -15,7 +15,7 @@ export const useWebSocket = () => {
   };
 
   const createClient = (onConnecet: (client: Client) => void) => {
-    const socket = new SockJS(WS_URL);
+    const socket = new SockJS(config.wsUrl);
     const client = new Client({
       webSocketFactory: () => socket,
       onConnect: () => onConnecet(client),

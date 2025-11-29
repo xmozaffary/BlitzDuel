@@ -1,4 +1,4 @@
-import { API_URL } from "../config/environment";
+import { config } from "../config/config";
 
 export interface UserInfo {
   id: number;
@@ -17,7 +17,7 @@ export const fetchUserInfo = async (): Promise<UserInfo> => {
     throw new Error("No JWT token found");
   }
 
-  const response = await fetch(`${API_URL}/api/auth/me`, {
+  const response = await fetch(`${config.apiBaseUrl}/api/auth/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",

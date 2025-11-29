@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { get } from "../services/servicebase.ts";
-import { API_BASE_URL } from "../config/api.ts";
+import { config } from "../config/config.ts";
 import { Spinner } from "../components/Spinner.tsx";
 import { QuizCard } from "../components/QuizCard.tsx";
 
@@ -26,7 +26,7 @@ const Quizzes = () => {
 
   const fetchQuizzes = async () => {
     try {
-      const data = await get<Quiz[]>(`${API_BASE_URL}/quizzes`);
+      const data = await get<Quiz[]>(`${config.apiBaseUrl}/quizzes`);
       setQuizzes(data);
     } catch (error) {
       console.error("Failed to fetch Quizzes", error);

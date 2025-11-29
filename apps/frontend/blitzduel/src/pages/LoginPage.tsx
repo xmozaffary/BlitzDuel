@@ -1,8 +1,8 @@
-import { API_URL } from "../config/environment";
+import { config } from "../config/config";
 
 export const LoginPage = () => {
   const handleGoogleLogin = () => {
-    window.location.href = `${API_URL}/oauth2/authorization/google`;
+    window.location.href = config.oauthUrl;
   };
 
   return (
