@@ -3,6 +3,7 @@ import "./App.scss";
 import { router } from "./Router";
 import { PlayerProvider } from "./contexts/PlayerContext";
 // CI/CD test
+// CI/CD test
 function App() {
   return (
     <PlayerProvider>
