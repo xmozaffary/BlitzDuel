@@ -7,9 +7,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 interface Quiz {
   id: number;
-  name: string;
+  title: string;
   description: string;
-  questionCount: number;
+  totalQuestions: number;
+  imgUrl: string;
 }
 
 const QuizDetails = () => {
@@ -45,29 +46,54 @@ const QuizDetails = () => {
   if (!quiz) return <NotFound />;
 
   return (
-    <div className="quiz-details-container">
-      <div className="quiz-details-card">
-        <button onClick={() => navigate("/")} className="back-button">
-          ← Tillbaka
-        </button>
-
-        <div className="quiz-info">
-          <h1>{quiz.name}</h1>
-          <p className="description">{quiz.description}</p>
-          <div className="meta-info">
-            <span className="question-count">
-              📝 {quiz.questionCount} frågor
-            </span>
+    <div className="quiz-details-page">
+      <div className="quiz-details-container">
+        <div className="quiz-content">
+          <div className="quiz-image-section">
+            <button onClick={() => navigate("/")} className="back-btn">
+              ← Tillbaka
+            </button>
+            <div className="quiz-image">
+              {quiz.imgUrl ? (
+                <img src={quiz.imgUrl} alt={quiz.title} />
+              ) : (
+                <div className="quiz-image-placeholder">
+                  <span className="quiz-icon">🎯</span>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        <div className="action-buttons">
-          <button onClick={createLobby} className="btn-create-lobby">
-            Skapa Lobby
-          </button>
-          <button onClick={joinLobby} className="btn-join-lobby">
-            Gå med i Lobby
-          </button>
+          <div className="quiz-info-section">
+            <div className="quiz-header">
+              <h1>{quiz.title}</h1>
+              <p className="quiz-description">{quiz.description}</p>
+            </div>
+
+            <div className="quiz-meta">
+              <div className="meta-item">
+                <span className="meta-icon">📝</span>
+                <span className="meta-text">{quiz.totalQuestions} frågor</span>
+              </div>
+              <div className="meta-item">
+                <span className="meta-icon">⏱️</span>
+                <span className="meta-text">
+                  ~{quiz.totalQuestions * 10} sekunder
+                </span>
+              </div>
+            </div>
+
+            <div className="action-buttons">
+              <button onClick={createLobby} className="btn-primary">
+                <span className="btn-icon">🎮</span>
+                Skapa Lobby
+              </button>
+              <button onClick={joinLobby} className="btn-secondary">
+                <span className="btn-icon">🚪</span>
+                Gå med i Lobby
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
