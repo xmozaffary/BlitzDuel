@@ -135,6 +135,9 @@ jobs:
           context: ./apps/frontend/blitzduel
           push: true
           platforms: linux/arm64
+          build-args: |
+            VITE_API_BASE_URL=${{ secrets.BACKEND_URL }}/api
+            VITE_WS_URL=${{ secrets.BACKEND_URL }}/ws
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/blitzduel-frontend:latest
             ${{ secrets.DOCKER_USERNAME }}/blitzduel-frontend:${{ env.IMAGE_TAG }}
