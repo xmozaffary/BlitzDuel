@@ -1,6 +1,5 @@
 package se.examenarbete.blitzduel.security;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -45,7 +44,12 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         String token = jwtUtil.generateToken(user.getEmail(), user.getId(), user.getName());
 
         String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8);
-        String redirectUrl = String.format("%s/auth/callback?token=%s", frontendBaseUrl, encodedToken);
+
+        String baseUrl = frontendBaseUrl.endsWith("/")
+                ? frontendBaseUrl.substring(0, frontendBaseUrl.length() - 1)
+                : frontendBaseUrl;
+
+        String redirectUrl = String.format("%s/auth/callback?token=%s", baseUrl, encodedToken);
 
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
