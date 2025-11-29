@@ -10,8 +10,11 @@ if (!wsUrl) {
   throw new Error("VITE_WS_URL is required");
 }
 
+// Extract base URL without /api
+const baseUrl = apiBaseUrl.replace(/\/api$/, "");
+
 export const config = {
   apiBaseUrl,
   wsUrl,
-  oauthUrl: apiBaseUrl.replace("/api", "/oauth2/authorization/google"),
+  oauthUrl: `${baseUrl}/oauth2/authorization/google`,
 } as const;
