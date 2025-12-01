@@ -45,10 +45,12 @@ public class AnswerService {
             session.setGuestNameScore(session.getGuestNameScore() + 1);
         }
 
+        GameUpdateResponse response = buildGameUpdateResponse(session, correctAnswer, hostCorrect, guestCorrect);
+
         session.setCurrentQuestionIndex(session.getCurrentQuestionIndex() + 1);
         session.resetAnswers();
 
-        return buildGameUpdateResponse(session, correctAnswer, hostCorrect, guestCorrect);
+        return response;
     }
 
 
@@ -70,10 +72,12 @@ public class AnswerService {
             session.setGuestNameScore(session.getGuestNameScore() + 1);
         }
 
+        GameUpdateResponse response = buildGameUpdateResponse(session, correctAnswer, hostCorrect, guestCorrect);
+
         session.setCurrentQuestionIndex(session.getCurrentQuestionIndex() + 1 );
         session.resetAnswers();
 
-        return buildGameUpdateResponse(session, correctAnswer, hostCorrect, guestCorrect);
+        return response;
     }
 
     private GameUpdateResponse buildGameUpdateResponse(GameSession session, int correctAnswer,

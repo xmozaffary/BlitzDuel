@@ -149,6 +149,13 @@ public class GameController {
                 Thread.sleep(1000);
 
                 GameSession session = gameService.getGameSession(lobbyCode).get();
+
+                if(session.isGameOver()) {
+                    System.out.println("Game is over, sending final score");
+                    sendFinalScore(lobbyCode);
+                    return;
+                }
+
                 Question nextQuestion = gameService.getCurrentQuestion(lobbyCode);
 
                 QuestionDTO nextDto = new QuestionDTO(
@@ -182,5 +189,25 @@ public class GameController {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    private void sendFinalScore(String lobbyCode) {
+        GameSession session = gameService.getGameSession(lobbyCode)
+                .orElseThrow(() -> new RuntimeException("Game not found"));
+
+        GameUpdateResponse finalScore = new GameUpdateResponse();
+        finalScore.setStatus("GAME_OVER");
+        finalScore.setHostScore(session.getHostNameScore());
+        finalScore.setGuestScore(session.getGuestNameScore());
+        finalScore.setHostName(session.getHostName());
+        finalScore.setGuestName(session.getGuestName());
+
+        System.out.println("Sending GAME_OVER: " + session.getHostName() + " " + session.getHostNameScore() + " - " +
+                session.getGuestNameScore() + " " + session.getGuestName());
+
+        simpMessagingTemplate.convertAndSend(
+                "/topic/game/" + lobbyCode,
+                finalScore
+        );
     }
 }
