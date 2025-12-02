@@ -43,7 +43,7 @@ const Quizzes = () => {
 
   return (
     <div className="quiz-selection">
-      <h1>välja quiz</h1>
+      <h1>⚡Välj Quiz⚡</h1>
       <div className="quiz-list">
         {quizzes.map((quiz) => {
           return (

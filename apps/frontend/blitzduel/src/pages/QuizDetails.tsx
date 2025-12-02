@@ -73,12 +73,12 @@ const QuizDetails = () => {
             <div className="quiz-meta">
               <div className="meta-item">
                 <span className="meta-icon">📝</span>
-                <span className="meta-text">{quiz.totalQuestions} frågor</span>
+                <span className="meta-text">10 frågor</span>
               </div>
               <div className="meta-item">
                 <span className="meta-icon">⏱️</span>
                 <span className="meta-text">
-                  ~{quiz.totalQuestions * 10} sekunder
+                  5 sekunder per fråga
                 </span>
               </div>
             </div>
