@@ -23,7 +23,7 @@ public class QuizService {
     }
 
     public List<Quiz> getAllQuizzes() {
-        return quizRepository.findAll();
+        return quizRepository.findAllWithQuestions();
     }
 
     public Optional<Quiz> getQuizById(Long id) {

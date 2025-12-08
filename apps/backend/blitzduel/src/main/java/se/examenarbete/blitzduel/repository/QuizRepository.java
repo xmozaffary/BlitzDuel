@@ -16,5 +16,8 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     List<Quiz> findByCategory(String category);
 
-Optional<Quiz> findByTitle(String title);
+    Optional<Quiz> findByTitle(String title);
+
+    @Query("SELECT DISTINCT q FROM Quiz q LEFT JOIN FETCH q.questions")
+    List<Quiz> findAllWithQuestions();
 }
