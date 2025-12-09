@@ -18,8 +18,9 @@ export interface ResultData {
   guestScore: number;
   hostName: string;
   guestName: string;
+  hostAnswerIndex: number | null;
+  guestAnswerIndex: number | null;
 }
-
 
 export interface TimerUpdateMessage {
   type: "TIMER_UPDATE";

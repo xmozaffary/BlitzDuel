@@ -146,7 +146,7 @@ public class GameController {
     private void sendNextQuestion(String lobbyCode) {
         new Thread(() -> {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
 
                 GameSession session = gameService.getGameSession(lobbyCode).get();
 

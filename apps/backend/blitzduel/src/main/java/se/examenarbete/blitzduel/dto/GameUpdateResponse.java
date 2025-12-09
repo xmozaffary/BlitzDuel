@@ -10,6 +10,10 @@ public class GameUpdateResponse {
     private Integer guestScore;
     private String hostName;
     private String guestName;
+    private Integer hostAnswerIndex;
+    private Integer guestAnswerIndex;
+
+
 
     public String getStatus() {
         return status;
@@ -17,6 +21,22 @@ public class GameUpdateResponse {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Integer getHostAnswerIndex() {
+        return hostAnswerIndex;
+    }
+
+    public void setHostAnswerIndex(Integer hostAnswerIndex) {
+        this.hostAnswerIndex = hostAnswerIndex;
+    }
+
+    public Integer getGuestAnswerIndex() {
+        return guestAnswerIndex;
+    }
+
+    public void setGuestAnswerIndex(Integer guestAnswerIndex) {
+        this.guestAnswerIndex = guestAnswerIndex;
     }
 
     public Integer getCorrectAnswerIndex() {

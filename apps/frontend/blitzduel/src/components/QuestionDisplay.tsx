@@ -8,6 +8,9 @@ interface QuestionDisplayProps {
   answerState: "selected" | "correct" | "incorrect" | null;
   onAnswer: (index: number) => void;
   isDisabled: boolean;
+  profilePicture?: string;
+  correctAnswerIndex?: number | null;
+  opponentAnswerIndex?: number | null;
 }
 
 export const QuestionDisplay = ({
@@ -18,6 +21,9 @@ export const QuestionDisplay = ({
   answerState,
   onAnswer,
   isDisabled,
+  profilePicture,
+  correctAnswerIndex,
+  opponentAnswerIndex,
 }: QuestionDisplayProps) => {
   return (
     <div className="question-content">
@@ -39,6 +45,9 @@ export const QuestionDisplay = ({
             disabled={selectedAnswer !== null || isDisabled}
             isSelected={selectedAnswer === index}
             answerState={selectedAnswer === index ? answerState : null}
+            profilePicture={profilePicture}
+            correctAnswerIndex={correctAnswerIndex}
+            opponentAnswerIndex={opponentAnswerIndex}
           />
         ))}
       </div>

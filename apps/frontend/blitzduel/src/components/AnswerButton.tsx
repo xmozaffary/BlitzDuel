@@ -5,6 +5,9 @@ interface AnswerButtonProps {
   disabled?: boolean;
   isSelected?: boolean;
   answerState?: "selected" | "correct" | "incorrect" | null;
+  profilePicture?: string;
+  correctAnswerIndex?: number | null;
+  opponentAnswerIndex?: number | null;
 }
 
 export const AnswerButton = ({
@@ -14,6 +17,9 @@ export const AnswerButton = ({
   disabled = false,
   isSelected = false,
   answerState = null,
+  profilePicture,
+  correctAnswerIndex,
+  opponentAnswerIndex,
 }: AnswerButtonProps) => {
   const handleClick = () => {
     if (disabled) return;
@@ -23,9 +29,12 @@ export const AnswerButton = ({
   const getButtonClass = () => {
     if (answerState === "correct") return "answer-button--correct";
     if (answerState === "incorrect") return "answer-button--incorrect";
+    if (correctAnswerIndex === index) return "answer-button--correct";
     if (answerState === "selected") return "answer-button--selected";
     return "";
   };
+
+  const isOpponentAnswer = opponentAnswerIndex === index;
 
   return (
     <button
@@ -34,6 +43,11 @@ export const AnswerButton = ({
       disabled={disabled || isSelected}
     >
       {option}
+      {isSelected && profilePicture && (
+        <img src={profilePicture} alt="Du" className="answer-profile-pic" />
+      )}
+
+      {isOpponentAnswer && <span className="opponent-indicator">👤</span>}
     </button>
   );
 };

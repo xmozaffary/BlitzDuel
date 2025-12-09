@@ -9,9 +9,11 @@ import { Spinner } from "../components/Spinner.tsx";
 import { QuestionDisplay } from "../components/QuestionDisplay.tsx";
 import { usePlayer } from "../contexts/PlayerContext.tsx";
 import { QuestionTimer } from "../components/QuestionTimer.tsx";
+import { useAuth } from "../contexts/AuthContext";
 
 const GameScreen = () => {
   const { lobbyCode } = useParams<{ lobbyCode: string }>();
+  const { user } = useAuth();
   const [client, setClient] = useState<Client | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<QuestionData | null>(
     null
@@ -37,7 +39,7 @@ const GameScreen = () => {
 
   const [timeIsUp, setTimeIsUp] = useState(false);
 
-  const [remainingTime, setRemainingTime] = useState(5)
+  const [remainingTime, setRemainingTime] = useState(5);
 
   useEffect(() => {
     selectedAnswerRef.current = selectedAnswer;
@@ -61,16 +63,16 @@ const GameScreen = () => {
           setSelectedAnswer(null);
           setAnswerState(null);
           setShowResult(false);
-          setTimeIsUp(false)
+          setTimeIsUp(false);
           setRemainingTime(5);
 
           if (data.hostName) setHostName(data.hostName);
           if (data.guestName) setGuestName(data.guestName);
-        }else if(data.type === "TIMER_UPDATE"){
+        } else if (data.type === "TIMER_UPDATE") {
           setRemainingTime(data.remainingTime);
 
-          if(data.remainingTime <= 0){
-            setTimeIsUp(true)
+          if (data.remainingTime <= 0) {
+            setTimeIsUp(true);
           }
         } else if (data.status === "BOTH_ANSWERED") {
           setResult(data as ResultData);
@@ -86,7 +88,7 @@ const GameScreen = () => {
 
           setTimeout(() => {
             setShowResult(true);
-          }, 3000);
+          }, 5000);
         } else if (data.status === "GAME_OVER") {
           setGameOver(true);
           setResult(data as ResultData);
@@ -162,27 +164,34 @@ const GameScreen = () => {
         opponentScore={opponentScore}
       />
       <div>
-              {currentQuestion.timeLimit && currentQuestion.startTime &&(
-        <QuestionTimer
-        remainingTime={remainingTime}
-          onTimeUp={() => {
-            console.log("time is up...")
-            setTimeIsUp(true);
-          }}
+        {currentQuestion.timeLimit && currentQuestion.startTime && (
+          <QuestionTimer
+            remainingTime={remainingTime}
+            onTimeUp={() => {
+              console.log("time is up...");
+              setTimeIsUp(true);
+            }}
+          />
+        )}
 
+        <QuestionDisplay
+          questionText={currentQuestion.questionText}
+          currentQuestionIndex={currentQuestion.currentQuestionIndex}
+          options={currentQuestion.options}
+          selectedAnswer={selectedAnswer}
+          answerState={answerState}
+          onAnswer={handleAnswer}
+          isDisabled={timeIsUp}
+          profilePicture={user?.profilePictureUrl}
+          correctAnswerIndex={result?.correctAnswerIndex ?? null}
+          opponentAnswerIndex={
+            result
+              ? isHost
+                ? result.guestAnswerIndex
+                : result.hostAnswerIndex
+              : null
+          }
         />
-      )}
-
-            <QuestionDisplay
-        questionText={currentQuestion.questionText}
-        currentQuestionIndex={currentQuestion.currentQuestionIndex}
-        options={currentQuestion.options}
-        selectedAnswer={selectedAnswer}
-        answerState={answerState}
-        onAnswer={handleAnswer}
-        isDisabled={timeIsUp}
-      />
-
       </div>
     </div>
   );

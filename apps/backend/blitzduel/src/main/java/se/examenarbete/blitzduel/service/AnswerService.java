@@ -90,6 +90,8 @@ public class AnswerService {
         response.setGuestScore(session.getGuestNameScore());
         response.setHostName(session.getHostName());
         response.setGuestName(session.getGuestName());
+        response.setHostAnswerIndex(session.getHostNameAnswer());
+        response.setGuestAnswerIndex(session.getGuestNameAnswer());
 
         if (session.isGameOver()){
             response.setStatus("GAME_OVER");
