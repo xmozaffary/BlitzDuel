@@ -13,6 +13,7 @@ export const useJoinLobby = () => {
   const [isJoining, setIsJoining] = useState<boolean>(false);
   const [joined, setJoined] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [hostName, setHostName] = useState<string>("");
   const { addLog, createClient } = useWebSocket();
   const navigate = useNavigate();
 
@@ -43,6 +44,11 @@ export const useJoinLobby = () => {
       client.subscribe(`/topic/lobby/${lobbyCode}`, (message: IMessage) => {
         const data: LobbyUpdate = JSON.parse(message.body);
         addLog(`📨 Lobby update: ${JSON.stringify(data)}`);
+
+        if (data.hostName) {
+          setHostName(data.hostName);
+        }
+
         setJoined(true);
         setIsJoining(false);
       });
@@ -79,6 +85,7 @@ export const useJoinLobby = () => {
     isJoining,
     joined,
     error,
+    hostName,
     joinLobby,
     cancelJoin,
     updateLobbyCode,

@@ -10,6 +10,7 @@ export interface LobbyUpdate {
   players?: string[];
   status: string;
   guestName?: string;
+  hostName?: string;
   [key: string]: unknown;
 }
 
