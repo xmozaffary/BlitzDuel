@@ -4,6 +4,7 @@ public class CreateLobbyRequest {
 
     private String name;
     private Long quizId;
+    private Long userId;
 
     public CreateLobbyRequest() {
     }
@@ -26,5 +27,12 @@ public class CreateLobbyRequest {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

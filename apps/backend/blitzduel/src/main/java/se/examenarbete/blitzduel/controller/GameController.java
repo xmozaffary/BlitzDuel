@@ -12,6 +12,7 @@ import se.examenarbete.blitzduel.model.Lobby;
 import se.examenarbete.blitzduel.model.Question;
 import se.examenarbete.blitzduel.service.GameService;
 import se.examenarbete.blitzduel.service.LobbyService;
+import se.examenarbete.blitzduel.service.UserService;
 
 @Controller
 public class GameController {
@@ -19,11 +20,14 @@ public class GameController {
     private final GameService gameService;
     private final LobbyService lobbyService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final UserService userService;
 
-    public GameController(GameService gameService, LobbyService lobbyService, SimpMessagingTemplate simpMessagingTemplate) {
+
+    public GameController(GameService gameService, LobbyService lobbyService, SimpMessagingTemplate simpMessagingTemplate, UserService userService) {
         this.gameService = gameService;
         this.lobbyService = lobbyService;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.userService = userService;
     }
 
     @MessageMapping("/game/{lobbyCode}/start")
@@ -37,7 +41,9 @@ public class GameController {
                 lobbyCode,
                 lobby.getQuizId(),
                 lobby.getHostName(),
-                lobby.getGuestName()
+                lobby.getGuestName(),
+                lobby.getHostUserId(),
+                lobby.getGuestUserId()
         );
 
         Question question = gameService.getCurrentQuestion(lobbyCode);
@@ -194,6 +200,17 @@ public class GameController {
     private void sendFinalScore(String lobbyCode) {
         GameSession session = gameService.getGameSession(lobbyCode)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
+
+        boolean hostWon = session.getHostNameScore() > session.getGuestNameScore();
+        boolean guestWon = session.getGuestNameScore() > session.getHostNameScore();
+
+        if (session.getHostUserId() != null) {
+            userService.updateGameStats(session.getHostUserId(), hostWon, session.getHostNameScore());
+        }
+
+        if (session.getGuestUserId() != null) {
+            userService.updateGameStats(session.getGuestUserId(), guestWon, session.getGuestNameScore());
+        }
 
         GameUpdateResponse finalScore = new GameUpdateResponse();
         finalScore.setStatus("GAME_OVER");

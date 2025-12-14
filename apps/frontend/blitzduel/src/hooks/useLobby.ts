@@ -54,7 +54,11 @@ export const useLobby = (quizId: number | null, autoCreate = false) => {
         );
       });
 
-      const payload: LobbyRequest = { name: user.name, quizId: Number(quizId) };
+      const payload: LobbyRequest = {
+        name: user.name,
+        quizId: Number(quizId),
+        userId: user.id,
+      };
       client.publish({
         destination: "/app/lobby/create",
         body: JSON.stringify(payload),

@@ -29,7 +29,7 @@ public class LobbyController {
     public LobbyResponse createLobby(CreateLobbyRequest request){
         System.out.println("Create lobby request from: " + request.getName());
 
-        Lobby lobby = lobbyService.createLobby(request.getName(), request.getQuizId());
+        Lobby lobby = lobbyService.createLobby(request.getName(), request.getQuizId(), request.getUserId());
 
 
         return new LobbyResponse(
@@ -49,7 +49,7 @@ public class LobbyController {
     ) {
         System.out.println("Join lobby request: " + code + " from: " + request.getName());
 
-        Optional<Lobby> lobbyOpt = lobbyService.joinLobby(code, request.getName());
+        Optional<Lobby> lobbyOpt = lobbyService.joinLobby(code, request.getName(), request.getUserId());
 
         if(lobbyOpt.isEmpty()){
             System.out.println("=== SENDING FULL MESSAGE ===");

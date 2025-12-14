@@ -17,8 +17,10 @@ export interface LobbyUpdate {
 export interface LobbyRequest {
   name: string;
   quizId: number;
+  userId: number;
 }
 
 export interface JoinLobbyRequest {
   name: string;
+  userId: number;
 }

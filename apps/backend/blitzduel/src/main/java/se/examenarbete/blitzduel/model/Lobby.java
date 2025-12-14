@@ -18,6 +18,8 @@ public class Lobby {
     private String guestName;
     private Status status;
     private final LocalDateTime createdAt;
+    private Long hostUserId;
+    private Long guestUserId;
 
 
 
@@ -71,6 +73,22 @@ public class Lobby {
 
     public boolean isReady() {
         return status == Status.READY;
+    }
+
+    public Long getHostUserId() {
+        return hostUserId;
+    }
+
+    public void setHostUserId(Long hostUserId) {
+        this.hostUserId = hostUserId;
+    }
+
+    public Long getGuestUserId() {
+        return guestUserId;
+    }
+
+    public void setGuestUserId(Long guestUserId) {
+        this.guestUserId = guestUserId;
     }
 
 

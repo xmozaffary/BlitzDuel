@@ -59,7 +59,7 @@ export const useJoinLobby = () => {
       });
 
       setTimeout(() => {
-        const payload: JoinLobbyRequest = { name: user.name };
+        const payload: JoinLobbyRequest = { name: user.name, userId: user.id };
         client.publish({
           destination: `/app/lobby/${lobbyCode}/join`,
           body: JSON.stringify(payload),

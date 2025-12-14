@@ -25,11 +25,13 @@ public class GameService {
         this.answerService = answerService;
     }
 
-    public GameSession startGame(String lobbyCode, Long quizId, String player1, String player2) {
+    public GameSession startGame(String lobbyCode, Long quizId, String player1, String player2, Long hostUserId, Long guestUserId) {
 
         GameSession session = new GameSession(lobbyCode, quizId, player1, player2);
         session.setCurrentQuestionIndex(0);
         session.setQuestionStartTime(System.currentTimeMillis());
+        session.setHostUserId(hostUserId);
+        session.setGuestUserId(guestUserId);
         gameSessions.put(lobbyCode, session);
         return session;
     }

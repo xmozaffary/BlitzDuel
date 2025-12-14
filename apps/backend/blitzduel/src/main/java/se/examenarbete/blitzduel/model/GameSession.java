@@ -16,6 +16,10 @@ public class GameSession {
 
     private long questionStartTime;
 
+
+    private Long hostUserId;
+    private Long guestUserId;
+
     public GameSession(String lobbyCode, Long quizId, String hostName, String guestName) {
         this.lobbyCode = lobbyCode;
         this.quizId = quizId;
@@ -99,5 +103,21 @@ public class GameSession {
 
     public boolean isGameOver() {
         return currentQuestionIndex >= 10;
+    }
+
+    public Long getHostUserId() {
+        return hostUserId;
+    }
+
+    public void setHostUserId(Long hostUserId) {
+        this.hostUserId = hostUserId;
+    }
+
+    public Long getGuestUserId() {
+        return guestUserId;
+    }
+
+    public void setGuestUserId(Long guestUserId) {
+        this.guestUserId = guestUserId;
     }
 }

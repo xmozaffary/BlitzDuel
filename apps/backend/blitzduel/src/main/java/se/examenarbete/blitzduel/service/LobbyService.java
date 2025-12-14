@@ -19,19 +19,20 @@ public class LobbyService {
         this.randomCodeGenerator = randomCodeGenerator;
     }
 
-    public Lobby createLobby(String nickname, Long quizId){
+    public Lobby createLobby(String nickname, Long quizId, Long userId){
         String code = randomCodeGenerator.generate();
         while (lobbies.containsKey(code)){
             code = randomCodeGenerator.generate();
         }
         Lobby lobby = new Lobby(code, quizId, nickname);
+        lobby.setHostUserId(userId);
         lobbies.put(code, lobby);
         System.out.println("Lobby created: " + lobby);
         return lobby;
     }
 
 
-    public Optional<Lobby> joinLobby(String code, String nickname) {
+    public Optional<Lobby> joinLobby(String code, String nickname, Long userId) {
         Lobby lobby = lobbies.get(code);
 
         if(lobby == null) {
@@ -44,6 +45,7 @@ public class LobbyService {
         }
 
         lobby.setGuestName(nickname);
+        lobby.setGuestUserId(userId);
         lobby.setStatus(Lobby.Status.READY);
 
         System.out.println("Player joined: " + lobby);
