@@ -5,6 +5,7 @@ import type { JoinLobbyRequest, LobbyUpdate } from "../types/lobby";
 import { useNavigate } from "react-router-dom";
 import { usePlayer } from "../contexts/PlayerContext";
 import { useAuth } from "../contexts/AuthContext";
+import { playSound } from "../utils/playSound";
 
 export const useJoinLobby = () => {
   const { user } = useAuth();
@@ -51,6 +52,7 @@ export const useJoinLobby = () => {
 
         setJoined(true);
         setIsJoining(false);
+        playSound("tjoho");
       });
 
       client.subscribe(`/topic/lobby/${lobbyCode}/start`, () => {

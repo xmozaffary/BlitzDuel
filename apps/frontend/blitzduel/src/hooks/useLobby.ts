@@ -5,6 +5,7 @@ import type { Client, IMessage } from "@stomp/stompjs";
 import { useNavigate } from "react-router-dom";
 import { usePlayer } from "../contexts/PlayerContext";
 import { useAuth } from "../contexts/AuthContext";
+import { playSound } from "../utils/playSound";
 
 export const useLobby = (quizId: number | null, autoCreate = false) => {
   const { user } = useAuth();
@@ -49,6 +50,7 @@ export const useLobby = (quizId: number | null, autoCreate = false) => {
               // You might need to extract guest name from updateData
               // This depends on your backend response structure
               setGuestName(updateData.guestName || "Gäst");
+              playSound("tjoho");
             }
           }
         );
