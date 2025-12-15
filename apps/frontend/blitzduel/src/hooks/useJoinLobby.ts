@@ -52,7 +52,7 @@ export const useJoinLobby = () => {
 
         setJoined(true);
         setIsJoining(false);
-        playSound("tjoho");
+        playSound("tjoho-v2.wav");
       });
 
       client.subscribe(`/topic/lobby/${lobbyCode}/start`, () => {
