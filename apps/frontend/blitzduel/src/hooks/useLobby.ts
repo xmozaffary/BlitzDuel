@@ -44,13 +44,10 @@ export const useLobby = (quizId: number | null, autoCreate = false) => {
             const updateData: LobbyUpdate = JSON.parse(updateMessage.body);
             addLog(`📨 Guest joined: ${JSON.stringify(updateData)}`);
 
-            // Check if status changed to READY (guest joined)
             if (updateData.status === "READY") {
               setWaitingForPlayers(false);
-              // You might need to extract guest name from updateData
-              // This depends on your backend response structure
               setGuestName(updateData.guestName || "Gäst");
-              playSound("tjoho");
+              playSound("tjoho-v2.wav");
             }
           }
         );
@@ -70,11 +67,11 @@ export const useLobby = (quizId: number | null, autoCreate = false) => {
     newClient.activate();
   };
 
-  // Auto-create lobby on mount if autoCreate is true
   useEffect(() => {
     if (autoCreate && user && quizId && !lobbyCode && !isCreating) {
       createLobby();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoCreate, user, quizId]);
 
   const startGame = () => {

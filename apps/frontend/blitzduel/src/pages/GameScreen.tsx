@@ -10,6 +10,7 @@ import { QuestionDisplay } from "../components/QuestionDisplay.tsx";
 import { usePlayer } from "../contexts/PlayerContext.tsx";
 import { QuestionTimer } from "../components/QuestionTimer.tsx";
 import { useAuth } from "../contexts/AuthContext";
+import { playSound } from "../utils/playSound";
 
 const GameScreen = () => {
   const { lobbyCode } = useParams<{ lobbyCode: string }>();
@@ -82,6 +83,12 @@ const GameScreen = () => {
           const isCorrect =
             selectedAnswerRef.current === data.correctAnswerIndex;
 
+          if (isCorrect) {
+            playSound("game-success.wav");
+          } else {
+            playSound("game-error.wav");
+          }
+
           setAnswerState(isCorrect ? "correct" : "incorrect");
 
           setShowResult(false);
@@ -92,6 +99,7 @@ const GameScreen = () => {
         } else if (data.status === "GAME_OVER") {
           setGameOver(true);
           setResult(data as ResultData);
+          playSound("game-level.wav");
         }
       });
     });
