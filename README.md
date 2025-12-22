@@ -176,9 +176,13 @@ Projektet innehåller omfattande tester för både backend och frontend.
 cd apps/backend/blitzduel
 mvn test
 
-# Frontend
+# Frontend (installera test-dependencies först)
 cd apps/frontend/blitzduel
+npm install -D vitest --legacy-peer-deps
 npm test
+
+# Frontend med coverage
+npm run test:coverage
 ```
 
 ## Författare
