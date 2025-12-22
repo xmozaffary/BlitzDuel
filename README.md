@@ -183,4 +183,4 @@ npm test
 
 ## Författare
 
-**Ali** & **Johan** - Examensarbete 2024-2025
+**Ali** & **Johan** - Examensarbete 2025
