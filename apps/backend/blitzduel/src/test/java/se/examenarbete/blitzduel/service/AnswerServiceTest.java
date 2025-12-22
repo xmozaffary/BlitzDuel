@@ -182,9 +182,10 @@ class AnswerServiceTest {
     }
 
     @Test
-    void submitAnswer_ShouldReturnGameOver_WhenLastQuestion() {
-        // Given
-        testSession.setCurrentQuestionIndex(9); // Last question (index 9 out of 10)
+    void submitAnswer_ShouldReturnBothAnswered_WhenLastQuestion() {
+        // Given - On last question (index 9 out of 10)
+        // Note: GAME_OVER status is sent by GameController, not AnswerService
+        testSession.setCurrentQuestionIndex(9);
         when(quizService.getQuestionsByQuizId(quizId)).thenReturn(testQuestions);
 
         testSession.setHostNameAnswer(0);
@@ -193,8 +194,9 @@ class AnswerServiceTest {
         GameUpdateResponse result = answerService.submitAnswer(lobbyCode, testSession, guestName, 0);
 
         // Then
-        assertEquals("GAME_OVER", result.getStatus());
-        assertEquals(10, testSession.getCurrentQuestionIndex());
+        assertEquals("BOTH_ANSWERED", result.getStatus());
+        assertEquals(10, testSession.getCurrentQuestionIndex()); // Index incremented after last question
+        assertTrue(testSession.isGameOver()); // Game is now over (index >= 10)
     }
 
     @Test
@@ -266,16 +268,19 @@ class AnswerServiceTest {
     }
 
     @Test
-    void handleTimeout_ShouldReturnGameOver_WhenLastQuestion() {
-        // Given
-        testSession.setCurrentQuestionIndex(9); // Last question (index 9 out of 10)
+    void handleTimeout_ShouldReturnBothAnswered_WhenLastQuestion() {
+        // Given - On last question (index 9 out of 10)
+        // Note: GAME_OVER status is sent by GameController, not AnswerService
+        testSession.setCurrentQuestionIndex(9);
         when(quizService.getQuestionsByQuizId(quizId)).thenReturn(testQuestions);
 
         // When
         GameUpdateResponse result = answerService.handleTimeout(lobbyCode, testSession);
 
         // Then
-        assertEquals("GAME_OVER", result.getStatus());
+        assertEquals("BOTH_ANSWERED", result.getStatus());
+        assertEquals(10, testSession.getCurrentQuestionIndex()); // Index incremented after last question
+        assertTrue(testSession.isGameOver()); // Game is now over (index >= 10)
     }
 
     @Test
