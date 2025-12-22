@@ -62,8 +62,7 @@ class AnswerServiceTest {
 
     @Test
     void submitAnswer_ShouldReturnWaiting_WhenOnlyHostAnswered() {
-        // Given
-        when(quizService.getQuestionsByQuizId(quizId)).thenReturn(testQuestions);
+        // Given - No mocking needed for this test
 
         // When
         GameUpdateResponse result = answerService.submitAnswer(lobbyCode, testSession, hostName, 0);
@@ -76,8 +75,7 @@ class AnswerServiceTest {
 
     @Test
     void submitAnswer_ShouldReturnWaiting_WhenOnlyGuestAnswered() {
-        // Given
-        when(quizService.getQuestionsByQuizId(quizId)).thenReturn(testQuestions);
+        // Given - No mocking needed for this test
 
         // When
         GameUpdateResponse result = answerService.submitAnswer(lobbyCode, testSession, guestName, 1);
@@ -179,7 +177,7 @@ class AnswerServiceTest {
     @Test
     void submitAnswer_ShouldReturnGameOver_WhenLastQuestion() {
         // Given
-        testSession.setCurrentQuestionIndex(9); // Last question (index 9 out of 10)
+        testSession.setCurrentQuestionIndex(2); // Last question (index 2 out of 3)
         when(quizService.getQuestionsByQuizId(quizId)).thenReturn(testQuestions);
 
         testSession.setHostNameAnswer(0);
@@ -189,7 +187,7 @@ class AnswerServiceTest {
 
         // Then
         assertEquals("GAME_OVER", result.getStatus());
-        assertEquals(10, testSession.getCurrentQuestionIndex());
+        assertEquals(3, testSession.getCurrentQuestionIndex());
     }
 
     @Test
@@ -263,7 +261,7 @@ class AnswerServiceTest {
     @Test
     void handleTimeout_ShouldReturnGameOver_WhenLastQuestion() {
         // Given
-        testSession.setCurrentQuestionIndex(9);
+        testSession.setCurrentQuestionIndex(2); // Last question (index 2 out of 3)
         when(quizService.getQuestionsByQuizId(quizId)).thenReturn(testQuestions);
 
         // When
