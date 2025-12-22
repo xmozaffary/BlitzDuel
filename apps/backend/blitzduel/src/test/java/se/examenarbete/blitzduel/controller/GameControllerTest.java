@@ -108,8 +108,8 @@ class GameControllerTest {
         );
 
         QuestionDTO sentQuestion = questionCaptor.getValue();
-        assertEquals("QUESTION", sentQuestion.getStatus());
-        assertEquals(0, sentQuestion.getQuestionIndex());
+        assertEquals("QUESTION", sentQuestion.getType());
+        assertEquals(0, sentQuestion.getCurrentQuestionIndex());
         assertEquals("What is 2+2?", sentQuestion.getQuestionText());
         assertEquals(testHostName, sentQuestion.getHostName());
         assertEquals(testGuestName, sentQuestion.getGuestName());
