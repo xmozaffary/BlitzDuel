@@ -102,8 +102,8 @@ class AnswerServiceTest {
         // Then
         assertEquals("BOTH_ANSWERED", result.getStatus());
         assertEquals(0, result.getCorrectAnswerIndex());
-        assertTrue(result.isHostCorrect());
-        assertFalse(result.isGuestCorrect());
+        assertTrue(result.getHostCorrect());
+        assertFalse(result.getGuestCorrect());
         assertEquals(1, result.getHostScore());
         assertEquals(0, result.getGuestScore());
     }
@@ -123,8 +123,8 @@ class AnswerServiceTest {
         // Then
         assertEquals(1, testSession.getHostNameScore());
         assertEquals(1, testSession.getGuestNameScore());
-        assertTrue(result.isHostCorrect());
-        assertTrue(result.isGuestCorrect());
+        assertTrue(result.getHostCorrect());
+        assertTrue(result.getGuestCorrect());
     }
 
     @Test
@@ -142,8 +142,8 @@ class AnswerServiceTest {
         // Then
         assertEquals(0, testSession.getHostNameScore());
         assertEquals(0, testSession.getGuestNameScore());
-        assertFalse(result.isHostCorrect());
-        assertFalse(result.isGuestCorrect());
+        assertFalse(result.getHostCorrect());
+        assertFalse(result.getGuestCorrect());
     }
 
     @Test
@@ -206,8 +206,8 @@ class AnswerServiceTest {
         // Then
         assertNotNull(result);
         assertEquals("BOTH_ANSWERED", result.getStatus());
-        assertTrue(result.isHostCorrect());
-        assertFalse(result.isGuestCorrect());
+        assertTrue(result.getHostCorrect());
+        assertFalse(result.getGuestCorrect());
         assertEquals(1, testSession.getHostNameScore());
         assertEquals(0, testSession.getGuestNameScore());
     }
@@ -226,8 +226,8 @@ class AnswerServiceTest {
 
         // Then
         assertNotNull(result);
-        assertFalse(result.isHostCorrect());
-        assertFalse(result.isGuestCorrect());
+        assertFalse(result.getHostCorrect());
+        assertFalse(result.getGuestCorrect());
         assertEquals(0, testSession.getHostNameScore());
         assertEquals(0, testSession.getGuestNameScore());
     }
