@@ -44,11 +44,18 @@ class AnswerServiceTest {
         testSession.setHostUserId(100L);
         testSession.setGuestUserId(200L);
 
-        // Create test questions
+        // Create test questions (10 questions to match GameSession.isGameOver() logic)
         testQuestions = Arrays.asList(
                 createQuestion(1L, "Question 1", 0),
                 createQuestion(2L, "Question 2", 1),
-                createQuestion(3L, "Question 3", 2)
+                createQuestion(3L, "Question 3", 2),
+                createQuestion(4L, "Question 4", 0),
+                createQuestion(5L, "Question 5", 1),
+                createQuestion(6L, "Question 6", 2),
+                createQuestion(7L, "Question 7", 0),
+                createQuestion(8L, "Question 8", 1),
+                createQuestion(9L, "Question 9", 2),
+                createQuestion(10L, "Question 10", 0)
         );
     }
 
@@ -177,7 +184,7 @@ class AnswerServiceTest {
     @Test
     void submitAnswer_ShouldReturnGameOver_WhenLastQuestion() {
         // Given
-        testSession.setCurrentQuestionIndex(2); // Last question (index 2 out of 3)
+        testSession.setCurrentQuestionIndex(9); // Last question (index 9 out of 10)
         when(quizService.getQuestionsByQuizId(quizId)).thenReturn(testQuestions);
 
         testSession.setHostNameAnswer(0);
@@ -187,7 +194,7 @@ class AnswerServiceTest {
 
         // Then
         assertEquals("GAME_OVER", result.getStatus());
-        assertEquals(3, testSession.getCurrentQuestionIndex());
+        assertEquals(10, testSession.getCurrentQuestionIndex());
     }
 
     @Test
@@ -261,7 +268,7 @@ class AnswerServiceTest {
     @Test
     void handleTimeout_ShouldReturnGameOver_WhenLastQuestion() {
         // Given
-        testSession.setCurrentQuestionIndex(2); // Last question (index 2 out of 3)
+        testSession.setCurrentQuestionIndex(9); // Last question (index 9 out of 10)
         when(quizService.getQuestionsByQuizId(quizId)).thenReturn(testQuestions);
 
         // When

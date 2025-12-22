@@ -180,11 +180,11 @@ class JwtUtilTest {
     @Test
     void generateToken_ShouldCreateDifferentTokens_ForSameUserAtDifferentTimes() throws InterruptedException {
         // Given
-        Thread.sleep(10); // Small delay to ensure different timestamps
+        Thread.sleep(1000); // Wait 1 second to ensure different timestamps (JWT uses seconds)
 
         // When
         String token1 = jwtUtil.generateToken(testEmail, testUserId, testName);
-        Thread.sleep(10);
+        Thread.sleep(1000); // Wait 1 second
         String token2 = jwtUtil.generateToken(testEmail, testUserId, testName);
 
         // Then
