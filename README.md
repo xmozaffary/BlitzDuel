@@ -17,7 +17,7 @@ Real-time multiplayer quiz-plattform med WebSocket-teknologi.
 
 BlitzDuel är en webbapplikation som möjliggör real-time quiz-dueller mellan två spelare. En spelare skapar en lobby och får en 6-siffrig kod som den andra spelaren använder för att joina. När båda är redo startar quizet och båda ser samma frågor samtidigt med en synkroniserad timer.
 
-**Examensarbete 2024-2025** med fokus på:
+**Examensarbete 2025** med fokus på:
 - WebSocket-kommunikation med STOMP
 - Real-time synkronisering mellan spelare
 - Server-driven spellogik
