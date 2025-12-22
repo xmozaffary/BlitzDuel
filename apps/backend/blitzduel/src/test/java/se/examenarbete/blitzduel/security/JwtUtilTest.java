@@ -150,7 +150,7 @@ class JwtUtilTest {
     }
 
     @Test
-    void validateToken_ShouldReturnFalse_ForExpiredToken() {
+    void validateToken_ShouldThrowException_ForExpiredToken() {
         // Given - Create token with very short expiration
         ReflectionTestUtils.setField(jwtUtil, "expiration", -1000L);
         String token = jwtUtil.generateToken(testEmail, testUserId, testName);
@@ -158,11 +158,10 @@ class JwtUtilTest {
         // Reset to normal expiration
         ReflectionTestUtils.setField(jwtUtil, "expiration", testExpiration);
 
-        // When
-        boolean isValid = jwtUtil.validateToken(token, testEmail);
-
-        // Then
-        assertFalse(isValid);
+        // When & Then - Expect ExpiredJwtException
+        assertThrows(io.jsonwebtoken.ExpiredJwtException.class, () -> {
+            jwtUtil.validateToken(token, testEmail);
+        });
     }
 
     @Test
